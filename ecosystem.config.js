@@ -2,16 +2,12 @@ module.exports = {
   apps: [
     {
       name: 'ztf-registration',
-      script: '.next/standalone/server.js',
-      cwd: __dirname,
+      script: 'server.js',
+      cwd: '/home/u161800917/domains/register.ztfuniversity.com/public_html',
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
       },
-      instances: 1,
-      autorestart: true,
-      watch: false,
-      max_memory_restart: '512M',
     },
   ],
-};
+}

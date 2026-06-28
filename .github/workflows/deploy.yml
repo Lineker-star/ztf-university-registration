@@ -49,6 +49,7 @@ jobs:
           cp -r .next/standalone ./deploy
           cp -r .next/static ./deploy/.next/static
           cp -r public ./deploy/public 2>/dev/null || true
+          cp ecosystem.config.js ./deploy/
           
 
       - name: Upload build artifact
