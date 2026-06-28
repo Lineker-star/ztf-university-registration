@@ -46,11 +46,9 @@ jobs:
 
       - name: Prepare deployment package
         run: |
-          cp -r .next/standalone ./deploy
-          mkdir -p ./deploy/.next/static
-          cp -r .next/static ./deploy/.next/static || true
-          if [ -d "public" ]; then
-          fi
+        cp -r .next/standalone ./deploy
+        cp -r .next/static ./deploy/.next/static
+        cp -r public ./deploy/public 2>/dev/null || true
           
 
       - name: Upload build artifact
