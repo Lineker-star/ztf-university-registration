@@ -46,10 +46,15 @@ jobs:
 
       - name: Prepare deployment package
         run: |
-          cp -r .next/standalone ./deploy
+          mkdir -p ./deploy
+          cp -r .next/standalone/. ./deploy/
+          mkdir -p ./deploy/.next
           cp -r .next/static ./deploy/.next/static
+          cp -r .next/server ./deploy/.next/server
           cp -r public ./deploy/public 2>/dev/null || true
           cp ecosystem.config.js ./deploy/
+          ls -la ./deploy/
+          ls -la ./deploy/.next/
           
 
       - name: Upload build artifact
