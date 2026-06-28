@@ -90,6 +90,9 @@ jobs:
         run: |
           rsync -avz --delete \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            --include='.next' \
+            --include='.next/**' \
+            --include='.env.production' \
             deploy_package/ \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/
 
