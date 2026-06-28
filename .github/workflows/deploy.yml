@@ -46,10 +46,12 @@ jobs:
 
       - name: Prepare deployment package
         run: |
-          cp -r .next/static .next/standalone/.next/static
-          cp -r public .next/standalone/public
-          cp ecosystem.config.js .next/standalone/
-          cp .env.production .next/standalone/.env
+          cp -r .next/standalone ./deploy
+          mkdir -p ./deploy/.next/static
+          cp -r .next/static ./deploy/.next/static || true
+          if [ -d "public" ]; then
+          fi
+          
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
