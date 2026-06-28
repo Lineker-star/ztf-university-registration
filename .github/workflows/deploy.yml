@@ -46,9 +46,9 @@ jobs:
 
       - name: Prepare deployment package
         run: |
-        cp -r .next/standalone ./deploy
-        cp -r .next/static ./deploy/.next/static
-        cp -r public ./deploy/public 2>/dev/null || true
+          cp -r .next/standalone ./deploy
+          cp -r .next/static ./deploy/.next/static
+          cp -r public ./deploy/public 2>/dev/null || true
           
 
       - name: Upload build artifact
@@ -87,12 +87,15 @@ jobs:
 
       - name: Restart app with PM2
         run: |
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} bash << 'ENDSSH'
+            export PATH=$PATH:/usr/local/bin:/usr/bin
+            source ~/.bashrc 2>/dev/null || true
+            source ~/.nvm/nvm.sh 2>/dev/null || true
             cd ${{ secrets.DEPLOY_PATH }}
-            command -v pm2 || npm install -g pm2
+            npm install -g pm2 2>/dev/null || true
             pm2 stop ztf-registration 2>/dev/null || true
             pm2 delete ztf-registration 2>/dev/null || true
             pm2 start ecosystem.config.js
             pm2 save
             pm2 list
-          "
+          ENDSSH
