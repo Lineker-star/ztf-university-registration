@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm run *)",
+      "Bash(curl -s -X POST http://localhost:3000/api/registration/start -H \"Content-Type: application/json\" -d '{\"language\":\"en\"}' -w \"\\\\nSTATUS:%{http_code}\\\\n\")",
+      "Bash(taskkill //F //PID 17472)"
+    ]
+  }
+}
