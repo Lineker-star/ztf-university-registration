@@ -88,6 +88,8 @@ jobs:
 
       - name: Deploy to server
         run: |
+          ls -la deploy_package/
+          ls -la deploy_package/.next/ 2>/dev/null || echo ".next NOT IN ARTIFACT"
           tar -czf deploy.tar.gz -C deploy_package .
           scp -P ${{ secrets.SSH_PORT }} deploy.tar.gz \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/
