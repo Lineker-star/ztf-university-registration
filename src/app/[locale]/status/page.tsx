@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { AlertCircle, Search } from 'lucide-react';
+import { AlertCircle, Check, Copy, MessageCircle, Printer, Search } from 'lucide-react';
 
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -13,15 +13,19 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { formatDate, fullName } from '@/lib/utils/helpers';
+import { cn } from '@/lib/utils';
+import { ApplicationStatus } from '@/types';
 
 interface StatusResult {
   application_number: string;
-  status: string;
+  status: ApplicationStatus;
   programme: string | null;
   submitted_at: string | null;
   created_at: string;
   personal_info: { first_name: string; last_name: string } | null;
 }
+
+const DECIDED_STATUSES: ApplicationStatus[] = ['shortlisted', 'admitted', 'rejected', 'deferred', 'withdrawn'];
 
 export default function StatusPage() {
   const t = useTranslations('status');
@@ -31,6 +35,7 @@ export default function StatusPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<StatusResult | null>(null);
+  const [copied, setCopied] = useState(false);
 
   async function handleCheck(e: React.FormEvent) {
     e.preventDefault();
@@ -62,12 +67,22 @@ export default function StatusPage() {
     }
   }
 
+  async function handleCopy() {
+    if (!result) return;
+    await navigator.clipboard.writeText(result.application_number);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  const underReviewDone = !!result && result.status !== 'pending';
+  const decisionDone = !!result && DECIDED_STATUSES.includes(result.status);
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Navbar />
       <main className="flex-1 py-12">
         <div className="container max-w-xl">
-          <Card>
+          <Card className="print:hidden">
             <CardContent className="p-6 sm:p-8">
               <h1 className="text-xl font-bold text-ztf-navy">{t('title')}</h1>
               <p className="mt-1 text-sm text-gray-500">{t('subtitle')}</p>
@@ -109,26 +124,85 @@ export default function StatusPage() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-
-              {result && (
-                <div className="mt-6 rounded-lg border border-gray-100 p-5">
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="font-mono font-bold text-ztf-navy">{result.application_number}</span>
-                    <StatusBadge status={result.status as any} />
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    {fullName(result.personal_info?.first_name, result.personal_info?.last_name)}
-                  </p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {t('programme_label')}: {result.programme ?? '-'}
-                  </p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {t('submitted_on')}: {formatDate(result.submitted_at ?? result.created_at, locale)}
-                  </p>
-                </div>
-              )}
             </CardContent>
           </Card>
+
+          {result && (
+            <Card className="mt-6">
+              <CardContent className="p-6 sm:p-8">
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-ztf-navy">{result.application_number}</span>
+                    <button
+                      type="button"
+                      onClick={handleCopy}
+                      className="text-gray-400 hover:text-ztf-navy"
+                      aria-label={t('copy_number')}
+                    >
+                      {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <StatusBadge status={result.status} />
+                </div>
+
+                <p className="text-sm text-gray-600">
+                  {fullName(result.personal_info?.first_name, result.personal_info?.last_name)}
+                </p>
+                <p className="mt-1 text-sm text-gray-500">
+                  {t('programme_label')}: {result.programme ?? '-'}
+                </p>
+                <p className="mt-1 text-sm text-gray-500">
+                  {t('submitted_on')}: {formatDate(result.submitted_at ?? result.created_at, locale)}
+                </p>
+
+                <div className="mt-6 flex items-center">
+                  {[
+                    { label: t('timeline_submitted'), done: true },
+                    { label: t('timeline_review'), done: underReviewDone },
+                    { label: t('timeline_decision'), done: decisionDone },
+                  ].map((step, index) => (
+                    <div key={step.label} className={cn('flex items-center', index < 2 && 'flex-1')}>
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={cn(
+                            'flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold',
+                            step.done ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-500'
+                          )}
+                        >
+                          {step.done ? <Check className="h-3.5 w-3.5" /> : index + 1}
+                        </div>
+                        <span className="mt-1 max-w-[4.5rem] text-center text-[11px] text-gray-500">
+                          {step.label}
+                        </span>
+                      </div>
+                      {index < 2 && (
+                        <div className={cn('mx-1 h-0.5 flex-1', step.done ? 'bg-green-600' : 'bg-gray-200')} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex flex-wrap justify-center gap-2 print:hidden">
+                  <Button variant="outline" size="sm" onClick={() => window.print()}>
+                    <Printer className="h-4 w-4" />
+                    {t('print_status')}
+                  </Button>
+                  <Button asChild variant="outline" size="sm">
+                    <a
+                      href={`https://wa.me/?text=${encodeURIComponent(
+                        `My ZTF University application (${result.application_number}) status: ${result.status}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      {t('share_whatsapp')}
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </main>
       <Footer />

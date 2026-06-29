@@ -4,6 +4,7 @@
     "register": "Register",
     "login": "Admin Login",
     "status": "Status",
+    "apply_now": "Apply Now",
     "back_to_main": "Back to ZTF University",
     "language": "Français"
   },
@@ -39,7 +40,38 @@
     "why_3_title": "Modern Campus",
     "why_3_text": "Well-equipped facilities designed for hands-on learning.",
     "why_4_title": "Career Support",
-    "why_4_text": "Dedicated guidance to help you reach your professional goals."
+    "why_4_text": "Dedicated guidance to help you reach your professional goals.",
+    "schools_title": "Our Schools & Institutes",
+    "school_1": "School of Agricultural Sciences & Biotechnology",
+    "school_1_desc": "Innovative training in agriculture and biotechnology for food security.",
+    "school_2": "School of Communication",
+    "school_2_desc": "Journalism, media, and strategic communication skills.",
+    "school_3": "School of Engineering & Applied Technology",
+    "school_3_desc": "Hands-on training across civil, electrical, and software engineering.",
+    "school_4": "School of Health Sciences",
+    "school_4_desc": "Preparing the next generation of healthcare professionals.",
+    "school_5": "School of Economics, Finance & Business Management",
+    "school_5_desc": "Building leaders in finance, accounting, and enterprise management.",
+    "school_6": "School of Law & Political Sciences",
+    "school_6_desc": "Legal and governance training rooted in African and global contexts.",
+    "school_7": "School of Humanities & Applied Social Sciences",
+    "school_7_desc": "Critical thinking across languages, society, and human development.",
+    "school_8": "ZTF VTI for Sustainable Development",
+    "school_8_desc": "Vocational and technical skills for sustainable livelihoods.",
+    "school_9": "ZTF VTI for Human Sciences",
+    "school_9_desc": "Vocational training centered on human and social sciences.",
+    "requirements_title": "Admission Requirements",
+    "req_hnd": "GCE Ordinary Level (5 credits including relevant subjects) or BEPC",
+    "req_btech": "GCE Advanced Level (2 passes) or Baccalauréat",
+    "req_mtech": "BTech, HND, or an equivalent degree",
+    "req_bts": "BEPC and a complete academic dossier",
+    "req_licence": "Baccalauréat or an equivalent qualification",
+    "req_master": "Licence or an equivalent qualification",
+    "contact_title": "Get In Touch",
+    "office_hours": "Office Hours",
+    "open_hours": "Monday - Friday: 7:30 AM - 5:00 PM",
+    "academic_year_label": "Academic Year",
+    "languages_label": "Languages"
   },
   "steps": {
     "step1_title": "Personal Information",
@@ -80,7 +112,8 @@
     "married": "Married",
     "religion": "Religion",
     "photo": "Passport Photo",
-    "photo_hint": "Upload a recent passport-size photo (JPEG/PNG, max 2MB)"
+    "photo_hint": "Upload a recent passport-size photo (JPEG/PNG, max 2MB)",
+    "same_as_phone": "Same as phone number"
   },
   "academic": {
     "title": "Academic Background",
@@ -153,7 +186,9 @@
     "formats": "Accepted: PDF, JPG, PNG, XLSX",
     "uploaded": "Uploaded",
     "remove": "Remove",
-    "uploading": "Uploading..."
+    "uploading": "Uploading...",
+    "required_count": "{count} of {total} required documents uploaded",
+    "all_required_done": "All required documents uploaded"
   },
   "guardian": {
     "title": "Guardian & Emergency Contact",
@@ -167,6 +202,7 @@
     "parent_occupation": "Occupation",
     "parent_employer": "Employer",
     "emergency_title": "Emergency Contact",
+    "same_as_guardian": "Same as parent/guardian above",
     "emergency_name": "Full Name",
     "emergency_relationship": "Relationship",
     "emergency_phone": "Phone Number (Primary)",
@@ -221,7 +257,15 @@
     "withdrawn": "Withdrawn",
     "not_found": "Application not found",
     "submitted_on": "Submitted on",
-    "programme_label": "Programme"
+    "programme_label": "Programme",
+    "title_short": "Check Status",
+    "copy_number": "Copy number",
+    "copied": "Copied!",
+    "share_whatsapp": "Share on WhatsApp",
+    "print_status": "Print Status",
+    "timeline_submitted": "Submitted",
+    "timeline_review": "Under Review",
+    "timeline_decision": "Decision"
   },
   "admin": {
     "title": "Admin Management System",
@@ -276,7 +320,27 @@
     "this_month": "This Month",
     "rejection_reason": "Rejection Reason",
     "update_status": "Update Status",
-    "confirm_status_change": "Are you sure you want to change the status to {status}?"
+    "confirm_status_change": "Are you sure you want to change the status to {status}?",
+    "good_morning": "Good morning",
+    "good_afternoon": "Good afternoon",
+    "good_evening": "Good evening",
+    "verify_document": "Verify Document",
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "notes_placeholder": "Add admin notes about this application...",
+    "note_saved": "Note saved",
+    "forgot_password": "Forgot password?",
+    "reset_password_sent": "Password reset email sent",
+    "remember_me": "Remember me",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "by_region": "By Region",
+    "admission_rate": "Admission Rate",
+    "export_admitted": "Export Admitted Students",
+    "alerts": "Alerts",
+    "alert_pending_old": "{count} application(s) pending review for 7+ days",
+    "alert_docs_unverified": "{count} document(s) awaiting verification",
+    "no_alerts": "No alerts right now"
   },
   "validation": {
     "required": "This field is required",
@@ -288,7 +352,18 @@
     "file_type_invalid": "File type not accepted. Please upload PDF, JPG, PNG, or XLSX",
     "date_invalid": "Please enter a valid date",
     "future_date": "Date cannot be in the future",
+    "min_age": "You must be at least 16 years old",
     "agree_required": "You must agree to the declaration to submit"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "address_value": "Koumé - Bertoua, East Region, Cameroon",
+    "hours": "Office Hours",
+    "hours_value": "Monday - Friday: 7:30 AM - 5:00 PM",
+    "whatsapp": "WhatsApp"
   },
   "common": {
     "loading": "Loading...",

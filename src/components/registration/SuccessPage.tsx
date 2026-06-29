@@ -1,11 +1,43 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
-import { CheckCircle2, Download, Home } from 'lucide-react';
+import { CheckCircle2, Download, Home, MessageCircle } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 import { Link } from '@/navigation';
 import { Button } from '@/components/ui/button';
+
+const CONFETTI_COLORS = ['#C9A84C', '#003B7A', '#E8C96B', '#0056B3', '#22C55E'];
+
+function Confetti() {
+  const pieces = useMemo(
+    () =>
+      Array.from({ length: 24 }).map((_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 0.6,
+        color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      })),
+    []
+  );
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {pieces.map((piece) => (
+        <span
+          key={piece.id}
+          className="absolute top-0 h-2.5 w-2.5 animate-confetti-fall rounded-sm"
+          style={{
+            left: `${piece.left}%`,
+            backgroundColor: piece.color,
+            animationDelay: `${piece.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 export function SuccessPage({ applicationNumber, email }: { applicationNumber: string; email?: string }) {
   const t = useTranslations('review');
@@ -26,8 +58,13 @@ export function SuccessPage({ applicationNumber, email }: { applicationNumber: s
     doc.save(`${applicationNumber}_receipt.pdf`);
   }
 
+  const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(
+    `My ZTF University application number is ${applicationNumber}`
+  )}`;
+
   return (
-    <div className="space-y-6 text-center">
+    <div className="relative space-y-6 text-center">
+      <Confetti />
       <CheckCircle2 className="mx-auto h-16 w-16 text-green-600" />
       <h2 className="text-2xl font-bold text-ztf-navy">{t('success_title')}</h2>
       <p className="text-gray-600">{t('success_message')}</p>
@@ -47,6 +84,12 @@ export function SuccessPage({ applicationNumber, email }: { applicationNumber: s
         <Button onClick={downloadReceipt} variant="outline">
           <Download className="h-4 w-4" />
           {t('download_receipt')}
+        </Button>
+        <Button asChild variant="outline">
+          <a href={whatsappShareUrl} target="_blank" rel="noopener noreferrer">
+            <MessageCircle className="h-4 w-4" />
+            WhatsApp
+          </a>
         </Button>
         <Button asChild>
           <Link href="/">

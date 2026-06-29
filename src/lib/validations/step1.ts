@@ -6,7 +6,14 @@ export const step1Schema = z.object({
   date_of_birth: z
     .string()
     .min(1)
-    .refine((val) => new Date(val) < new Date(), { message: 'future_date' }),
+    .refine((val) => new Date(val) < new Date(), { message: 'future_date' })
+    .refine(
+      (val) => {
+        const age = (Date.now() - new Date(val).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+        return age >= 16;
+      },
+      { message: 'min_age' }
+    ),
   place_of_birth: z.string().min(2).max(100),
   gender: z.enum(['male', 'female', 'other']),
   nationality: z.string().min(2).max(100),

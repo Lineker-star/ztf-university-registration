@@ -13,6 +13,8 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status');
     const programme = searchParams.get('programme');
     const search = searchParams.get('search')?.trim();
+    const dateFrom = searchParams.get('date_from');
+    const dateTo = searchParams.get('date_to');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const from = (page - 1) * limit;
@@ -35,6 +37,8 @@ export async function GET(req: NextRequest) {
 
     if (status && status !== 'all') query = query.eq('status', status);
     if (programme && programme !== 'all') query = query.eq('programme', programme);
+    if (dateFrom) query = query.gte('created_at', dateFrom);
+    if (dateTo) query = query.lte('created_at', `${dateTo}T23:59:59`);
     if (search) {
       const escaped = search.replace(/[%,]/g, '');
       query = query.or(

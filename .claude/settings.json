@@ -4,7 +4,20 @@
       "Bash(npm --version)",
       "Bash(npm run *)",
       "Bash(curl -s -X POST http://localhost:3000/api/registration/start -H \"Content-Type: application/json\" -d '{\"language\":\"en\"}' -w \"\\\\nSTATUS:%{http_code}\\\\n\")",
-      "Bash(taskkill //F //PID 17472)"
+      "Bash(taskkill //F //PID 17472)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/messages/en.json','utf8'\\)\\); console.log\\('en.json OK'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/messages/fr.json','utf8'\\)\\); console.log\\('fr.json OK'\\)\")",
+      "Bash(npm install *)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/messages/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('src/messages/fr.json','utf8'\\)\\); console.log\\('OK'\\)\")",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Read(//tmp/**)",
+      "Bash(echo \"Started with PID $!\")",
+      "Bash(cat /tmp/dev2.log | tail -150)",
+      "Bash(netstat -ano)",
+      "Bash(tail -80 /tmp/dev2.log)",
+      "Bash(taskkill //F //PID 28028)",
+      "Bash(taskkill //F //PID 4388)"
     ]
   }
 }

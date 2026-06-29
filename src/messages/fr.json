@@ -4,6 +4,7 @@
     "register": "S'inscrire",
     "login": "Connexion Admin",
     "status": "Statut",
+    "apply_now": "Postuler",
     "back_to_main": "Retour à ZTF Université",
     "language": "English"
   },
@@ -39,7 +40,38 @@
     "why_3_title": "Campus Moderne",
     "why_3_text": "Des infrastructures bien équipées conçues pour un apprentissage pratique.",
     "why_4_title": "Accompagnement Professionnel",
-    "why_4_text": "Un accompagnement dédié pour atteindre vos objectifs professionnels."
+    "why_4_text": "Un accompagnement dédié pour atteindre vos objectifs professionnels.",
+    "schools_title": "Nos Écoles et Instituts",
+    "school_1": "École des Sciences Agricoles et Biotechnologie",
+    "school_1_desc": "Formation innovante en agriculture et biotechnologie pour la sécurité alimentaire.",
+    "school_2": "École de Communication",
+    "school_2_desc": "Journalisme, médias et compétences en communication stratégique.",
+    "school_3": "École d'Ingénierie et Technologie Appliquée",
+    "school_3_desc": "Formation pratique en génie civil, électrique et logiciel.",
+    "school_4": "École des Sciences de la Santé",
+    "school_4_desc": "Former la prochaine génération de professionnels de santé.",
+    "school_5": "École d'Économie, Finance et Gestion des Entreprises",
+    "school_5_desc": "Former des leaders en finance, comptabilité et gestion d'entreprise.",
+    "school_6": "École de Droit et Sciences Politiques",
+    "school_6_desc": "Formation juridique et de gouvernance ancrée dans le contexte africain et mondial.",
+    "school_7": "École des Humanités et Sciences Sociales Appliquées",
+    "school_7_desc": "Esprit critique en langues, société et développement humain.",
+    "school_8": "ZTF VTI pour le Développement Durable",
+    "school_8_desc": "Compétences techniques et professionnelles pour des moyens de subsistance durables.",
+    "school_9": "ZTF VTI pour les Sciences Humaines",
+    "school_9_desc": "Formation professionnelle centrée sur les sciences humaines et sociales.",
+    "requirements_title": "Conditions d'Admission",
+    "req_hnd": "GCE Ordinary Level (5 crédits dont des matières pertinentes) ou BEPC",
+    "req_btech": "GCE Advanced Level (2 réussites) ou Baccalauréat",
+    "req_mtech": "BTech, HND, ou un diplôme équivalent",
+    "req_bts": "BEPC et un dossier scolaire complet",
+    "req_licence": "Baccalauréat ou une qualification équivalente",
+    "req_master": "Licence ou une qualification équivalente",
+    "contact_title": "Contactez-Nous",
+    "office_hours": "Heures d'Ouverture",
+    "open_hours": "Lundi - Vendredi : 7h30 - 17h00",
+    "academic_year_label": "Année Académique",
+    "languages_label": "Langues"
   },
   "steps": {
     "step1_title": "Informations Personnelles",
@@ -80,7 +112,8 @@
     "married": "Marié(e)",
     "religion": "Religion",
     "photo": "Photo d'Identité",
-    "photo_hint": "Téléversez une photo récente format passeport (JPEG/PNG, max 2Mo)"
+    "photo_hint": "Téléversez une photo récente format passeport (JPEG/PNG, max 2Mo)",
+    "same_as_phone": "Identique au numéro de téléphone"
   },
   "academic": {
     "title": "Parcours Académique",
@@ -153,7 +186,9 @@
     "formats": "Acceptés : PDF, JPG, PNG, XLSX",
     "uploaded": "Téléversé",
     "remove": "Supprimer",
-    "uploading": "Téléversement en cours..."
+    "uploading": "Téléversement en cours...",
+    "required_count": "{count} sur {total} documents obligatoires téléversés",
+    "all_required_done": "Tous les documents obligatoires sont téléversés"
   },
   "guardian": {
     "title": "Tuteur et Contact d'Urgence",
@@ -167,6 +202,7 @@
     "parent_occupation": "Profession",
     "parent_employer": "Employeur",
     "emergency_title": "Contact d'Urgence",
+    "same_as_guardian": "Identique au parent/tuteur ci-dessus",
     "emergency_name": "Nom Complet",
     "emergency_relationship": "Lien de Parenté",
     "emergency_phone": "Téléphone Principal",
@@ -221,7 +257,15 @@
     "withdrawn": "Retiré(e)",
     "not_found": "Candidature introuvable",
     "submitted_on": "Soumise le",
-    "programme_label": "Filière"
+    "programme_label": "Filière",
+    "title_short": "Vérifier le Statut",
+    "copy_number": "Copier le numéro",
+    "copied": "Copié !",
+    "share_whatsapp": "Partager sur WhatsApp",
+    "print_status": "Imprimer le Statut",
+    "timeline_submitted": "Soumise",
+    "timeline_review": "En Cours d'Examen",
+    "timeline_decision": "Décision"
   },
   "admin": {
     "title": "Système de Gestion Admin",
@@ -276,7 +320,27 @@
     "this_month": "Ce Mois",
     "rejection_reason": "Motif de Rejet",
     "update_status": "Mettre à Jour le Statut",
-    "confirm_status_change": "Êtes-vous sûr de vouloir changer le statut en {status} ?"
+    "confirm_status_change": "Êtes-vous sûr de vouloir changer le statut en {status} ?",
+    "good_morning": "Bonjour",
+    "good_afternoon": "Bon après-midi",
+    "good_evening": "Bonsoir",
+    "verify_document": "Vérifier le Document",
+    "verified": "Vérifié",
+    "unverified": "Non Vérifié",
+    "notes_placeholder": "Ajouter des notes administratives sur cette candidature...",
+    "note_saved": "Note enregistrée",
+    "forgot_password": "Mot de passe oublié ?",
+    "reset_password_sent": "Email de réinitialisation envoyé",
+    "remember_me": "Se souvenir de moi",
+    "show_password": "Afficher le mot de passe",
+    "hide_password": "Masquer le mot de passe",
+    "by_region": "Par Région",
+    "admission_rate": "Taux d'Admission",
+    "export_admitted": "Exporter les Étudiants Admis",
+    "alerts": "Alertes",
+    "alert_pending_old": "{count} candidature(s) en attente depuis plus de 7 jours",
+    "alert_docs_unverified": "{count} document(s) en attente de vérification",
+    "no_alerts": "Aucune alerte pour le moment"
   },
   "validation": {
     "required": "Ce champ est obligatoire",
@@ -288,7 +352,18 @@
     "file_type_invalid": "Type de fichier non accepté. Veuillez téléverser PDF, JPG, PNG ou XLSX",
     "date_invalid": "Veuillez entrer une date valide",
     "future_date": "La date ne peut pas être dans le futur",
+    "min_age": "Vous devez avoir au moins 16 ans",
     "agree_required": "Vous devez accepter la déclaration pour soumettre"
+  },
+  "contact": {
+    "title": "Contactez-Nous",
+    "phone": "Téléphone",
+    "email": "Email",
+    "address": "Adresse",
+    "address_value": "Koumé - Bertoua, Région de l'Est, Cameroun",
+    "hours": "Heures d'Ouverture",
+    "hours_value": "Lundi - Vendredi : 7h30 - 17h00",
+    "whatsapp": "WhatsApp"
   },
   "common": {
     "loading": "Chargement...",

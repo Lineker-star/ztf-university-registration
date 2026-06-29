@@ -51,6 +51,7 @@ const config: Config = {
         ztf: {
           navy: '#003B7A',
           navyDark: '#002855',
+          navyDeep: '#0A1628',
           navyLight: '#0056B3',
           gold: '#C9A84C',
           goldLight: '#E8C96B',
@@ -71,10 +72,25 @@ const config: Config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        'slide-up': {
+          from: { transform: 'translateY(20px)', opacity: '0' },
+          to: { transform: 'translateY(0)', opacity: '1' },
+        },
+        'confetti-fall': {
+          '0%': { transform: 'translateY(-10px) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translateY(420px) rotate(540deg)', opacity: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-in': 'fade-in 0.5s ease-in-out',
+        'slide-up': 'slide-up 0.4s ease-out',
+        'confetti-fall': 'confetti-fall 2.2s ease-in forwards',
       },
     },
   },

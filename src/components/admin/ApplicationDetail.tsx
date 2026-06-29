@@ -244,7 +244,22 @@ export function ApplicationDetail({ applicationId }: { applicationId: string }) 
             <CardContent className="space-y-3 p-5">
               {data.documents.length === 0 && <p className="text-sm text-gray-400">No documents uploaded.</p>}
               {data.documents.map((doc) => (
-                <DocumentViewer key={doc.id} document={doc} />
+                <DocumentViewer
+                  key={doc.id}
+                  document={doc}
+                  onVerifyChange={(id, isVerified) =>
+                    setData((prev) =>
+                      prev
+                        ? {
+                            ...prev,
+                            documents: prev.documents.map((d) =>
+                              d.id === id ? { ...d, is_verified: isVerified } : d
+                            ),
+                          }
+                        : prev
+                    )
+                  }
+                />
               ))}
             </CardContent>
           </Card>

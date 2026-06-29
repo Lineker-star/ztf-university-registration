@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Eye, FileText, ImageIcon, Loader2 } from 'lucide-react';
+import { CheckCircle2, Circle, Eye, FileText, ImageIcon, Loader2 } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -16,11 +16,18 @@ export async function resolveDocumentUrl(path: string): Promise<string> {
   return data.url;
 }
 
-export function DocumentViewer({ document: doc }: { document: Document }) {
+interface DocumentViewerProps {
+  document: Document;
+  onVerifyChange?: (id: string, isVerified: boolean) => void;
+}
+
+export function DocumentViewer({ document: doc, onVerifyChange }: DocumentViewerProps) {
   const t = useTranslations('documents');
+  const tAdmin = useTranslations('admin');
   const [open, setOpen] = useState(false);
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isImage = doc.mime_type?.startsWith('image/');
 
@@ -39,6 +46,20 @@ export function DocumentViewer({ document: doc }: { document: Document }) {
     }
   }
 
+  async function handleToggleVerify() {
+    setVerifying(true);
+    try {
+      await fetch(`/api/admin/documents/${doc.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_verified: !doc.is_verified }),
+      });
+      onVerifyChange?.(doc.id, !doc.is_verified);
+    } finally {
+      setVerifying(false);
+    }
+  }
+
   return (
     <>
       <div className="flex items-center justify-between rounded-md border border-gray-100 px-3 py-2">
@@ -53,9 +74,21 @@ export function DocumentViewer({ document: doc }: { document: Document }) {
             <p className="text-xs text-gray-400">{formatFileSize(doc.file_size)}</p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={handleOpen}>
-          <Eye className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleToggleVerify}
+            disabled={verifying}
+            className={doc.is_verified ? 'text-green-600' : 'text-gray-400'}
+            title={doc.is_verified ? tAdmin('verified') : tAdmin('verify_document')}
+          >
+            {doc.is_verified ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={handleOpen}>
+            <Eye className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>

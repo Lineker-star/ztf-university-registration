@@ -1,6 +1,7 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 
@@ -9,9 +10,14 @@ import { useRegistrationStore } from '@/lib/store/registrationStore';
 import { step1Schema, Step1FormValues } from '@/lib/validations/step1';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileUploader, UploadedFileInfo } from '@/components/registration/FileUploader';
 import { StepNavigation } from '@/components/registration/StepNavigation';
+import { COUNTRIES } from '@/lib/constants/countries';
+import { CAMEROON_REGIONS } from '@/lib/constants/programmes';
+
+const RELIGIONS = ['Christianity', 'Islam', 'Other', 'Prefer not to say'];
 
 export default function Step1Personal() {
   const t = useTranslations('personal');
@@ -21,11 +27,16 @@ export default function Step1Personal() {
   const step1 = useRegistrationStore((s) => s.formData.step1);
   const updateStep1 = useRegistrationStore((s) => s.updateStep1);
 
+  const [whatsappSameAsPhone, setWhatsappSameAsPhone] = useState(
+    !!step1.whatsapp && step1.whatsapp === step1.phone
+  );
+
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<Step1FormValues>({
     resolver: zodResolver(step1Schema),
@@ -50,6 +61,7 @@ export default function Step1Personal() {
     },
   });
 
+  const selectedCountry = watch('country');
   const photoUrl = watch('passport_photo_url');
   const photoValue: UploadedFileInfo | null = photoUrl
     ? { url: photoUrl, name: 'passport-photo.jpg', size: 0, mimeType: 'image/jpeg' }
@@ -119,12 +131,38 @@ export default function Step1Personal() {
         </div>
         <div>
           <Label htmlFor="phone">{t('phone')}</Label>
-          <Input id="phone" {...register('phone')} />
+          <div className="flex">
+            <span className="flex items-center rounded-l-md border border-r-0 border-input bg-gray-50 px-3 text-sm text-gray-500">
+              +237
+            </span>
+            <Input
+              id="phone"
+              className="rounded-l-none"
+              {...register('phone', {
+                onChange: (e) => {
+                  if (whatsappSameAsPhone) setValue('whatsapp', e.target.value);
+                },
+              })}
+            />
+          </div>
           {errors.phone && <p className="mt-1 text-xs text-red-600">{fieldError('phone')}</p>}
         </div>
         <div>
           <Label htmlFor="whatsapp">{t('whatsapp')}</Label>
-          <Input id="whatsapp" {...register('whatsapp')} />
+          <Input id="whatsapp" disabled={whatsappSameAsPhone} {...register('whatsapp')} />
+          <div className="mt-1.5 flex items-center gap-2">
+            <Checkbox
+              id="whatsapp_same"
+              checked={whatsappSameAsPhone}
+              onCheckedChange={(checked) => {
+                setWhatsappSameAsPhone(!!checked);
+                if (checked) setValue('whatsapp', watch('phone'));
+              }}
+            />
+            <Label htmlFor="whatsapp_same" className="text-xs font-normal text-gray-500">
+              {t('same_as_phone')}
+            </Label>
+          </div>
         </div>
       </div>
 
@@ -141,11 +179,49 @@ export default function Step1Personal() {
         </div>
         <div>
           <Label htmlFor="region">{t('region')}</Label>
-          <Input id="region" {...register('region')} />
+          {selectedCountry === 'Cameroon' ? (
+            <Controller
+              control={control}
+              name="region"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger id="region">
+                    <SelectValue placeholder={t('region')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CAMEROON_REGIONS.map((region) => (
+                      <SelectItem key={region} value={region}>
+                        {region}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          ) : (
+            <Input id="region" {...register('region')} />
+          )}
         </div>
         <div>
           <Label htmlFor="country">{t('country')}</Label>
-          <Input id="country" {...register('country')} />
+          <Controller
+            control={control}
+            name="country"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id="country">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {COUNTRIES.map((c) => (
+                    <SelectItem key={c.name} value={c.name}>
+                      {c.flag} {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
         </div>
       </div>
 
@@ -167,7 +243,24 @@ export default function Step1Personal() {
         </div>
         <div>
           <Label htmlFor="religion">{t('religion')}</Label>
-          <Input id="religion" {...register('religion')} />
+          <Controller
+            control={control}
+            name="religion"
+            render={({ field }) => (
+              <Select value={field.value ?? undefined} onValueChange={field.onChange}>
+                <SelectTrigger id="religion">
+                  <SelectValue placeholder={t('religion')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {RELIGIONS.map((religion) => (
+                    <SelectItem key={religion} value={religion}>
+                      {religion}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
         </div>
       </div>
 

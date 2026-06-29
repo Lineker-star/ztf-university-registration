@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { createAdminSupabaseClient } from '@/lib/supabase/server';
 import { DashboardStats } from '@/components/admin/DashboardStats';
 import { ExportButtons } from '@/components/admin/ExportButtons';
+import { AdmittedExportButton } from '@/components/admin/AdmittedExportButton';
 import { Card, CardContent } from '@/components/ui/card';
 import { DashboardStats as DashboardStatsType } from '@/types';
 
@@ -12,7 +13,7 @@ async function getStatsAndApplications() {
     .from('applications')
     .select(
       `id, application_number, status, programme, department, academic_system, submitted_at, created_at, language,
-       personal_info(first_name, last_name, email, phone)`
+       personal_info(first_name, last_name, email, phone, region)`
     )
     .eq('is_draft', false)
     .order('created_at', { ascending: false })
@@ -34,27 +35,74 @@ async function getStatsAndApplications() {
     this_month: 0,
   };
 
+  const byRegion: Record<string, number> = {};
+
   for (const row of applications) {
     if (row.status in stats) (stats as any)[row.status] += 1;
     if (row.programme) stats.by_programme[row.programme] = (stats.by_programme[row.programme] ?? 0) + 1;
     if (new Date(row.created_at) >= monthStart) stats.this_month += 1;
+
+    const region = (row.personal_info as any)?.region;
+    if (region) byRegion[region] = (byRegion[region] ?? 0) + 1;
   }
 
-  return { stats, applications };
+  return { stats, applications, byRegion };
 }
 
 export default async function AdminReportsPage() {
   const t = await getTranslations('admin');
-  const { stats, applications } = await getStatsAndApplications();
+  const { stats, applications, byRegion } = await getStatsAndApplications();
+
+  const admissionRate = stats.total > 0 ? Math.round((stats.admitted / stats.total) * 100) : 0;
+  const regionEntries = Object.entries(byRegion).sort((a, b) => b[1] - a[1]);
+  const maxRegionCount = Math.max(1, ...regionEntries.map(([, count]) => count));
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-ztf-navy">{t('reports')}</h1>
-        <ExportButtons applications={applications as any} filters={{}} />
+        <div className="flex flex-wrap gap-2">
+          <ExportButtons applications={applications as any} filters={{}} />
+          <AdmittedExportButton />
+        </div>
       </div>
 
       <DashboardStats stats={stats} />
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <CardContent className="p-5">
+            <h3 className="mb-1 font-semibold text-gray-800">{t('admission_rate')}</h3>
+            <p className="text-3xl font-bold text-ztf-navy">{admissionRate}%</p>
+            <p className="mt-1 text-sm text-gray-500">
+              {stats.admitted} {t('admitted').toLowerCase()} / {stats.total} {t('total_applications').toLowerCase()}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-5">
+            <h3 className="mb-4 font-semibold text-gray-800">{t('by_region')}</h3>
+            <div className="space-y-3">
+              {regionEntries.length === 0 && <p className="text-sm text-gray-400">{t('no_applications')}</p>}
+              {regionEntries.map(([region, count]) => (
+                <div key={region}>
+                  <div className="mb-1 flex justify-between text-sm">
+                    <span className="text-gray-600">{region}</span>
+                    <span className="font-medium text-gray-800">{count}</span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-gray-100">
+                    <div
+                      className="h-2 rounded-full bg-ztf-gold"
+                      style={{ width: `${(count / maxRegionCount) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <Card>
         <CardContent className="p-5 text-sm text-gray-500">

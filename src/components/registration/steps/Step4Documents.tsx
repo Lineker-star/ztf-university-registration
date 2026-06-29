@@ -1,16 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 import { useRouter } from '@/navigation';
 import { useRegistrationStore } from '@/lib/store/registrationStore';
 import { DOCUMENT_REQUIREMENTS } from '@/lib/constants/documents';
 import { FileUploader, UploadedFileInfo } from '@/components/registration/FileUploader';
-import { StepNavigation } from '@/components/registration/StepNavigation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 
 type DocsState = Record<string, UploadedFileInfo | null>;
 
@@ -41,6 +41,12 @@ export default function Step4Documents() {
   const required = DOCUMENT_REQUIREMENTS.filter((d) => d.required);
   const optional = DOCUMENT_REQUIREMENTS.filter((d) => !d.required);
 
+  const requiredUploadedCount = useMemo(
+    () => required.filter((r) => docs[r.type]).length,
+    [required, docs]
+  );
+  const allRequiredDone = requiredUploadedCount === required.length;
+
   function handleSubmit() {
     const missing = required.filter((r) => !docs[r.type]);
     if (missing.length > 0) {
@@ -67,6 +73,18 @@ export default function Step4Documents() {
   return (
     <div className="space-y-8">
       <p className="text-sm text-gray-500">{t('subtitle')}</p>
+
+      <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+        <div className="mb-2 flex items-center justify-between text-sm">
+          <span className={allRequiredDone ? 'flex items-center gap-1.5 font-medium text-green-700' : 'text-gray-600'}>
+            {allRequiredDone && <CheckCircle2 className="h-4 w-4" />}
+            {allRequiredDone
+              ? t('all_required_done')
+              : t('required_count', { count: requiredUploadedCount, total: required.length })}
+          </span>
+        </div>
+        <Progress value={(requiredUploadedCount / required.length) * 100} />
+      </div>
 
       <div>
         <h4 className="mb-3 font-semibold text-ztf-navy">{t('required')}</h4>

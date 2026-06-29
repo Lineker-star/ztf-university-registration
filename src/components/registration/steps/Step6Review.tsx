@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { SuccessPage } from '@/components/registration/SuccessPage';
 import { fullName } from '@/lib/utils/helpers';
+import { DOCUMENT_REQUIREMENTS } from '@/lib/constants/documents';
 
 function ReviewRow({ label, value }: { label: string; value?: string | null }) {
   return (
@@ -153,6 +154,16 @@ export default function Step6Review() {
           ) : (
             <p className="text-sm text-gray-400">-</p>
           )}
+          {(() => {
+            const uploadedTypes = new Set((step4.documents ?? []).map((d) => d.document_type));
+            const missing = DOCUMENT_REQUIREMENTS.filter((r) => r.required && !uploadedTypes.has(r.type));
+            if (missing.length === 0) return null;
+            return (
+              <p className="mt-2 border-t border-gray-100 pt-2 text-xs text-red-600">
+                {tDocuments('required')}: {missing.map((m) => tDocuments(m.type as any)).join(', ')}
+              </p>
+            );
+          })()}
         </div>
       </section>
 

@@ -31,6 +31,8 @@ export default function AdminApplicationsPage() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [programme, setProgramme] = useState('all');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<string>('');
@@ -41,6 +43,8 @@ export default function AdminApplicationsPage() {
       const params = new URLSearchParams({ page: String(page), limit: String(PAGE_SIZE) });
       if (status !== 'all') params.set('status', status);
       if (programme !== 'all') params.set('programme', programme);
+      if (dateFrom) params.set('date_from', dateFrom);
+      if (dateTo) params.set('date_to', dateTo);
       if (searchValue) params.set('search', searchValue);
 
       try {
@@ -54,7 +58,7 @@ export default function AdminApplicationsPage() {
         setLoading(false);
       }
     },
-    [page, status, programme]
+    [page, status, programme, dateFrom, dateTo]
   );
 
   const debouncedFetch = useMemo(() => debounce((value: string) => fetchApplications(value), 400), [fetchApplications]);
@@ -62,7 +66,7 @@ export default function AdminApplicationsPage() {
   useEffect(() => {
     debouncedFetch(search);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, page, status, programme]);
+  }, [search, page, status, programme, dateFrom, dateTo]);
 
   function toggleSelect(id: string) {
     setSelectedIds((prev) => {
@@ -160,6 +164,44 @@ export default function AdminApplicationsPage() {
                 ))}
               </SelectContent>
             </Select>
+
+            <Input
+              type="date"
+              aria-label={t('date_from')}
+              className="w-36"
+              value={dateFrom}
+              onChange={(e) => {
+                setPage(1);
+                setDateFrom(e.target.value);
+              }}
+            />
+            <Input
+              type="date"
+              aria-label={t('date_to')}
+              className="w-36"
+              value={dateTo}
+              onChange={(e) => {
+                setPage(1);
+                setDateTo(e.target.value);
+              }}
+            />
+
+            {(search || status !== 'all' || programme !== 'all' || dateFrom || dateTo) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setPage(1);
+                  setSearch('');
+                  setStatus('all');
+                  setProgramme('all');
+                  setDateFrom('');
+                  setDateTo('');
+                }}
+              >
+                {tCommon('clear')}
+              </Button>
+            )}
           </div>
 
           {selectedIds.size > 0 && (

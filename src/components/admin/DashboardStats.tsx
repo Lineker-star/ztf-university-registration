@@ -5,18 +5,11 @@ import { FileText, Clock, CheckCircle2, XCircle, TrendingUp } from 'lucide-react
 
 import { Card, CardContent } from '@/components/ui/card';
 import { DashboardStats as DashboardStatsType } from '@/types';
-
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-400',
-  under_review: 'bg-blue-400',
-  shortlisted: 'bg-purple-400',
-  admitted: 'bg-green-500',
-  rejected: 'bg-red-400',
-  deferred: 'bg-gray-400',
-};
+import { StatusDonut } from '@/components/admin/StatusDonut';
 
 export function DashboardStats({ stats }: { stats: DashboardStatsType }) {
   const t = useTranslations('admin');
+  const tStatus = useTranslations('status');
 
   const cards = [
     { label: t('total_applications'), value: stats.total, icon: FileText, color: 'text-ztf-navy bg-blue-50' },
@@ -25,13 +18,13 @@ export function DashboardStats({ stats }: { stats: DashboardStatsType }) {
     { label: t('rejected'), value: stats.rejected, icon: XCircle, color: 'text-red-600 bg-red-50' },
   ];
 
-  const statusEntries: [string, number][] = [
-    ['pending', stats.pending],
-    ['under_review', stats.under_review],
-    ['shortlisted', stats.shortlisted],
-    ['admitted', stats.admitted],
-    ['rejected', stats.rejected],
-    ['deferred', stats.deferred],
+  const statusEntries = [
+    { status: 'pending', count: stats.pending, label: tStatus('pending') },
+    { status: 'under_review', count: stats.under_review, label: tStatus('under_review') },
+    { status: 'shortlisted', count: stats.shortlisted, label: tStatus('shortlisted') },
+    { status: 'admitted', count: stats.admitted, label: tStatus('admitted') },
+    { status: 'rejected', count: stats.rejected, label: tStatus('rejected') },
+    { status: 'deferred', count: stats.deferred, label: tStatus('deferred') },
   ];
 
   const programmeEntries = Object.entries(stats.by_programme).sort((a, b) => b[1] - a[1]);
@@ -85,17 +78,7 @@ export function DashboardStats({ stats }: { stats: DashboardStatsType }) {
         <Card>
           <CardContent className="p-5">
             <h3 className="mb-4 font-semibold text-gray-800">{t('by_status')}</h3>
-            <div className="space-y-3">
-              {statusEntries.map(([status, count]) => (
-                <div key={status} className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-2 text-gray-600">
-                    <span className={`h-2.5 w-2.5 rounded-full ${STATUS_COLORS[status]}`} />
-                    {status.replace('_', ' ')}
-                  </span>
-                  <span className="font-medium text-gray-800">{count}</span>
-                </div>
-              ))}
-            </div>
+            <StatusDonut data={statusEntries} />
           </CardContent>
         </Card>
       </div>
