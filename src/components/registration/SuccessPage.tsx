@@ -1,12 +1,13 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { CheckCircle2, Download, Home, MessageCircle } from 'lucide-react';
-import jsPDF from 'jspdf';
 
 import { Link } from '@/navigation';
 import { Button } from '@/components/ui/button';
+import { generateApplicationPdf } from '@/lib/utils/generateApplicationPdf';
+import type { RegistrationFormData } from '@/types';
 
 const CONFETTI_COLORS = ['#C9A84C', '#003B7A', '#E8C96B', '#0056B3', '#22C55E'];
 
@@ -39,23 +40,28 @@ function Confetti() {
   );
 }
 
-export function SuccessPage({ applicationNumber, email }: { applicationNumber: string; email?: string }) {
+export function SuccessPage({
+  applicationNumber,
+  email,
+  formData,
+}: {
+  applicationNumber: string;
+  email?: string;
+  formData?: RegistrationFormData;
+}) {
   const t = useTranslations('review');
+  const locale = useLocale() as 'en' | 'fr';
 
   function downloadReceipt() {
-    const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.setTextColor(0, 59, 122);
-    doc.text('ZTF University Institute', 14, 20);
-    doc.setFontSize(12);
-    doc.setTextColor(0);
-    doc.text('Application Receipt', 14, 30);
-    doc.setFontSize(11);
-    doc.text(`Application Number: ${applicationNumber}`, 14, 45);
-    doc.text(`Status: Pending Review`, 14, 53);
-    if (email) doc.text(`Email: ${email}`, 14, 61);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 69);
-    doc.save(`${applicationNumber}_receipt.pdf`);
+    if (!formData) return;
+    generateApplicationPdf({
+      applicationNumber,
+      locale,
+      personal: formData.step1,
+      qualifications: formData.step2.qualifications,
+      programme: formData.step3,
+      guardian: formData.step5,
+    });
   }
 
   const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(
@@ -81,7 +87,7 @@ export function SuccessPage({ applicationNumber, email }: { applicationNumber: s
       </div>
 
       <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-        <Button onClick={downloadReceipt} variant="outline">
+        <Button onClick={downloadReceipt} variant="outline" disabled={!formData}>
           <Download className="h-4 w-4" />
           {t('download_receipt')}
         </Button>

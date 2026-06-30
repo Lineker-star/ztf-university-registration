@@ -67,6 +67,7 @@ export interface AcademicQualification {
   graduation_year: number;
   gpa_grade: string;
   subjects: { name: string; grade: string }[];
+  bacc_series?: string | null; // Baccalauréat only
   certificate_url: string | null;
   is_highest: boolean;
 }

@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { Download, Loader2, Mail, Printer, Save } from 'lucide-react';
+import { Download, FileText, Loader2, Mail, Printer, Save } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,9 +32,11 @@ import { ApplicationDetailData } from '@/types';
 import { formatDateTime, fullName, STATUS_OPTIONS } from '@/lib/utils/helpers';
 import { getInstitute, getField, getSpecialtiesByField, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
 import { useToast } from '@/components/ui/use-toast';
+import { generateApplicationPdf } from '@/lib/utils/generateApplicationPdf';
 
 export function ApplicationDetail({ applicationId }: { applicationId: string }) {
   const t = useTranslations('admin');
+  const locale = useLocale() as 'en' | 'fr';
   const { toast } = useToast();
   const [data, setData] = useState<ApplicationDetailData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -117,6 +119,27 @@ export function ApplicationDetail({ applicationId }: { applicationId: string }) 
     }
   }
 
+  function downloadPdf() {
+    if (!data) return;
+    generateApplicationPdf({
+      applicationNumber: data.application_number,
+      status: data.status,
+      submittedAt: data.submitted_at ?? data.created_at,
+      locale,
+      personal: data.personal_info ?? {},
+      qualifications: data.academic_qualifications,
+      programme: {
+        higher_institute: data.higher_institute,
+        field_of_study: data.field_of_study,
+        specialty: data.specialty,
+        programme: data.programme,
+        study_mode: data.study_mode,
+        intake_session: data.intake_session,
+      },
+      guardian: data.guardian_info ?? {},
+    });
+  }
+
   if (loading || !data) {
     return (
       <div className="space-y-6">
@@ -156,6 +179,10 @@ export function ApplicationDetail({ applicationId }: { applicationId: string }) 
           <Button variant="outline" size="sm" onClick={() => window.print()}>
             <Printer className="h-4 w-4" />
             {t('print')}
+          </Button>
+          <Button variant="outline" size="sm" onClick={downloadPdf}>
+            <FileText className="h-4 w-4" />
+            {t('download_pdf')}
           </Button>
           <Button variant="outline" size="sm" onClick={downloadAllDocuments} disabled={zipping}>
             {zipping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}

@@ -117,6 +117,13 @@
     "remove_qualification": "Remove",
     "subjects": "Subjects Passed",
     "grade": "Grade",
+    "bacc_series": "Series",
+    "bacc_average": "Average (out of 20)",
+    "a_level_subjects": "Subjects & Grades (GCE A-Level)",
+    "a_level_min_hint": "min. 2 required",
+    "a_level_min_warning": "You must have passed at least 2 subjects to be eligible.",
+    "add_subject": "Add a subject",
+    "qualifying_credential_notice": "To register, you must hold a passing GCE A-Level or Baccalauréat (or a recognized equivalent qualification).",
     "professional_exp": "Professional Experience",
     "has_experience": "Do you have any professional experience?",
     "exp_years": "Years of Experience",
@@ -253,7 +260,10 @@
     "print_status": "Print Status",
     "timeline_submitted": "Submitted",
     "timeline_review": "Under Review",
-    "timeline_decision": "Decision"
+    "timeline_decision": "Decision",
+    "download_pdf": "Download PDF",
+    "pdf_requires_both": "Enter both your application number and email, then search, to enable the full PDF download.",
+    "pdf_not_found": "Could not generate the PDF — make sure both your application number and email are correct."
   },
   "admin": {
     "title": "Admin Management System",
@@ -283,6 +293,7 @@
     "defer": "Defer",
     "send_email": "Send Email",
     "download_docs": "Download Documents",
+    "download_pdf": "Download PDF",
     "application_detail": "Application Details",
     "all_statuses": "All Statuses",
     "all_programmes": "All Programmes",

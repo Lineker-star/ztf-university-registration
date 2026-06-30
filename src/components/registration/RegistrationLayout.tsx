@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { AlertCircle, RotateCcw } from 'lucide-react';
 
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { StepIndicator } from './StepIndicator';
 import { useRegistrationStore } from '@/lib/store/registrationStore';
 import { useToast } from '@/components/ui/use-toast';
@@ -28,14 +31,17 @@ export function RegistrationLayout({
   const setCurrentStep = useRegistrationStore((s) => s.setCurrentStep);
   const formData = useRegistrationStore((s) => s.formData);
   const initializing = useRef(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
 
   useEffect(() => {
     setCurrentStep(currentStep);
   }, [currentStep, setCurrentStep]);
 
-  useEffect(() => {
-    if (applicationId || initializing.current) return;
+  const startSession = useCallback(() => {
     initializing.current = true;
+    setStarting(true);
+    setSessionError(null);
 
     fetch('/api/registration/start', {
       method: 'POST',
@@ -48,12 +54,26 @@ export function RegistrationLayout({
           setApplicationId(data.applicationId);
           setApplicationNumber(data.applicationNumber);
           setSessionToken(data.sessionToken);
+        } else {
+          throw new Error(data.error ?? 'Could not start registration session.');
         }
       })
-      .catch(() => {
-        toast({ variant: 'destructive', title: 'Error', description: 'Could not start registration session.' });
+      .catch((err) => {
+        const message = err instanceof Error ? err.message : 'Could not start registration session.';
+        setSessionError(message);
+        toast({ variant: 'destructive', title: 'Error', description: message });
+      })
+      .finally(() => {
+        initializing.current = false;
+        setStarting(false);
       });
-  }, [applicationId, locale, setApplicationId, setApplicationNumber, setSessionToken, toast]);
+  }, [locale, setApplicationId, setApplicationNumber, setSessionToken, toast]);
+
+  useEffect(() => {
+    if (applicationId || initializing.current) return;
+    startSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applicationId]);
 
   useEffect(() => {
     if (!applicationId || !sessionToken) return;
@@ -79,7 +99,23 @@ export function RegistrationLayout({
               <StepIndicator currentStep={currentStep} />
               <div className="my-6 border-t border-gray-100" />
               <h1 className="mb-1 text-xl font-bold text-ztf-navy">{t(`step${currentStep}_title` as any)}</h1>
-              <div className="mt-6">{children}</div>
+
+              {sessionError && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="flex flex-wrap items-center justify-between gap-3">
+                    <span>
+                      Could not start your registration session: {sessionError}
+                    </span>
+                    <Button type="button" variant="outline" size="sm" onClick={startSession} disabled={starting}>
+                      <RotateCcw className="h-3.5 w-3.5" />
+                      Retry
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <div className="mt-6">{!sessionError && children}</div>
             </CardContent>
           </Card>
         </div>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { AlertCircle, Check, Copy, MessageCircle, Printer, Search } from 'lucide-react';
+import { AlertCircle, Check, Copy, Download, Loader2, MessageCircle, Printer, Search } from 'lucide-react';
 
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -16,6 +16,7 @@ import { formatDate, fullName } from '@/lib/utils/helpers';
 import { cn } from '@/lib/utils';
 import { ApplicationStatus } from '@/types';
 import { getInstitute, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
+import { generateApplicationPdf } from '@/lib/utils/generateApplicationPdf';
 
 interface StatusResult {
   application_number: string;
@@ -40,6 +41,8 @@ export default function StatusPage() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<StatusResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   async function handleCheck(e: React.FormEvent) {
     e.preventDefault();
@@ -77,6 +80,43 @@ export default function StatusPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
+
+  async function handleDownloadPdf() {
+    if (!result || !appNumber || !email) return;
+    setPdfError(null);
+    setDownloadingPdf(true);
+    try {
+      const params = new URLSearchParams({ number: appNumber, email });
+      const res = await fetch(`/api/status/full?${params.toString()}`);
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(t('pdf_not_found'));
+
+      const app = data.application;
+      generateApplicationPdf({
+        applicationNumber: app.application_number,
+        status: app.status,
+        submittedAt: app.submitted_at ?? app.created_at,
+        locale,
+        personal: app.personal_info ?? {},
+        qualifications: app.academic_qualifications ?? [],
+        programme: {
+          higher_institute: app.higher_institute,
+          field_of_study: app.field_of_study,
+          specialty: app.specialty,
+          programme: app.programme,
+          study_mode: app.study_mode,
+          intake_session: app.intake_session,
+        },
+        guardian: app.guardian_info ?? {},
+      });
+    } catch (err: any) {
+      setPdfError(err.message ?? t('pdf_not_found'));
+    } finally {
+      setDownloadingPdf(false);
+    }
+  }
+
+  const canDownloadPdf = !!appNumber && !!email;
 
   const underReviewDone = !!result && result.status !== 'pending';
   const decisionDone = !!result && DECIDED_STATUSES.includes(result.status);
@@ -210,7 +250,27 @@ export default function StatusPage() {
                       {t('share_whatsapp')}
                     </a>
                   </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadPdf}
+                    disabled={!canDownloadPdf || downloadingPdf}
+                    title={canDownloadPdf ? undefined : t('pdf_requires_both')}
+                  >
+                    {downloadingPdf ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                    {t('download_pdf')}
+                  </Button>
                 </div>
+
+                {!canDownloadPdf && (
+                  <p className="mt-2 text-center text-xs text-gray-400 print:hidden">{t('pdf_requires_both')}</p>
+                )}
+                {pdfError && (
+                  <Alert variant="destructive" className="mt-3 print:hidden">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{pdfError}</AlertDescription>
+                  </Alert>
+                )}
               </CardContent>
             </Card>
           )}

@@ -79,6 +79,7 @@ CREATE TABLE academic_qualifications (
   graduation_year INTEGER,
   gpa_grade VARCHAR(20),
   subjects JSONB DEFAULT '[]',
+  bacc_series VARCHAR(5),
   certificate_url TEXT,
   is_highest BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW()

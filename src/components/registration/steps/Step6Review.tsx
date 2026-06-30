@@ -15,6 +15,7 @@ import { SuccessPage } from '@/components/registration/SuccessPage';
 import { fullName } from '@/lib/utils/helpers';
 import { DOCUMENT_REQUIREMENTS } from '@/lib/constants/documents';
 import { getInstitute, getField, getSpecialtiesByField, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
+import type { RegistrationFormData } from '@/types';
 
 function ReviewRow({ label, value }: { label: string; value?: string | null }) {
   return (
@@ -46,6 +47,7 @@ export default function Step6Review() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [applicationNumber, setApplicationNumber] = useState<string | null>(null);
+  const [submittedData, setSubmittedData] = useState<RegistrationFormData | null>(null);
 
   async function handleSubmit() {
     if (!agree || !terms) {
@@ -64,6 +66,9 @@ export default function Step6Review() {
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error ?? 'Submission failed');
 
+      // Snapshot before resetForm() clears the store, so the success page
+      // (and its PDF download) still has the data that was just submitted.
+      setSubmittedData(formData);
       setApplicationNumber(data.applicationNumber);
       resetForm();
     } catch (err: any) {
@@ -74,7 +79,13 @@ export default function Step6Review() {
   }
 
   if (applicationNumber) {
-    return <SuccessPage applicationNumber={applicationNumber} email={formData.step1.email} />;
+    return (
+      <SuccessPage
+        applicationNumber={applicationNumber}
+        email={submittedData?.step1.email}
+        formData={submittedData ?? undefined}
+      />
+    );
   }
 
   const { step1, step2, step3, step4, step5 } = formData;

@@ -117,6 +117,13 @@
     "remove_qualification": "Retirer",
     "subjects": "Matières Obtenues",
     "grade": "Note",
+    "bacc_series": "Série",
+    "bacc_average": "Moyenne (sur 20)",
+    "a_level_subjects": "Matières et Notes (GCE A-Level)",
+    "a_level_min_hint": "min. 2 requises",
+    "a_level_min_warning": "Vous devez avoir réussi au moins 2 matières pour être éligible.",
+    "add_subject": "Ajouter une matière",
+    "qualifying_credential_notice": "Pour vous inscrire, vous devez avoir réussi le GCE A-Level ou le Baccalauréat (ou un diplôme équivalent reconnu).",
     "professional_exp": "Expérience Professionnelle",
     "has_experience": "Avez-vous une expérience professionnelle ?",
     "exp_years": "Nombre d'Années",
@@ -253,7 +260,10 @@
     "print_status": "Imprimer le Statut",
     "timeline_submitted": "Soumise",
     "timeline_review": "En Cours d'Examen",
-    "timeline_decision": "Décision"
+    "timeline_decision": "Décision",
+    "download_pdf": "Télécharger le PDF",
+    "pdf_requires_both": "Entrez votre numéro de candidature et votre email, puis recherchez, pour activer le téléchargement complet du PDF.",
+    "pdf_not_found": "Impossible de générer le PDF — vérifiez que votre numéro de candidature et votre email sont corrects."
   },
   "admin": {
     "title": "Système de Gestion Admin",
@@ -283,6 +293,7 @@
     "defer": "Reporter",
     "send_email": "Envoyer Email",
     "download_docs": "Télécharger Documents",
+    "download_pdf": "Télécharger le PDF",
     "application_detail": "Détails de la Candidature",
     "all_statuses": "Tous les Statuts",
     "all_programmes": "Toutes les Filières",

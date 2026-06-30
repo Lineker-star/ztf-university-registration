@@ -257,3 +257,43 @@ export const CAMEROON_REGIONS = [
 ];
 
 export const CAMPUSES = ['Bertoua Main Campus', 'Yaoundé Annex', 'Douala Annex'];
+
+// --- Qualifying credential grading (GCE A-Level / Baccalauréat) ---
+
+export const GCE_A_LEVEL_GRADES = ['A', 'B', 'C', 'D', 'E'] as const;
+
+export const GCE_A_LEVEL_SUBJECTS = [
+  'Mathematics',
+  'Further Mathematics',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'Computer Science',
+  'Economics',
+  'Accounting',
+  'Geography',
+  'History',
+  'Literature in English',
+  'Government',
+  'Religious Studies',
+  'French',
+  'Food Science',
+  'Agricultural Science',
+  'Technical Drawing',
+  'Additional Mathematics',
+];
+
+export const BACCALAUREAT_SERIES = [
+  { id: 'A', label: 'Série A — Littéraire' },
+  { id: 'B', label: 'Série B — Littéraire (Langues)' },
+  { id: 'C', label: 'Série C — Mathématiques et Sciences Physiques' },
+  { id: 'D', label: 'Série D — Mathématiques et Sciences de la Nature' },
+  { id: 'E', label: 'Série E — Mathématiques et Technologie' },
+  { id: 'F1', label: 'Série F1 — Électrotechnique' },
+  { id: 'F2', label: 'Série F2 — Électronique' },
+  { id: 'F3', label: 'Série F3 — Mécanique Générale' },
+  { id: 'F4', label: 'Série F4 — Construction Mécanique' },
+  { id: 'F5', label: 'Série F5 — Économie Familiale et Sociale' },
+  { id: 'G', label: 'Série G — Techniques Administratives et de Gestion' },
+  { id: 'H', label: 'Série H — Techniques Industrielles' },
+] as const;
