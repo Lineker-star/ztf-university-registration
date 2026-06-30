@@ -19,9 +19,10 @@ export default async function AdminDashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 lg:flex-row">
+    <div className="relative flex min-h-screen flex-col bg-gray-50 lg:flex-row">
+      <div className="pointer-events-none fixed inset-0 bg-mesh-gradient opacity-[0.04]" />
       <AdminSidebar />
-      <div className="flex-1 overflow-x-hidden">
+      <div className="relative z-10 flex-1 overflow-x-hidden">
         <div className="container max-w-7xl py-6 sm:py-8">{children}</div>
       </div>
     </div>

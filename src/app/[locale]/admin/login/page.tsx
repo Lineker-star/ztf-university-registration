@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import {
   AlertCircle,
@@ -117,25 +118,29 @@ export default function AdminLoginPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       {/* Left branding panel */}
-      <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-ztf-navyDeep via-ztf-navy to-ztf-navyDeep p-12 text-white lg:flex">
-        <div className="pointer-events-none absolute -left-10 top-20 h-72 w-72 rounded-full bg-ztf-gold/10 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-10 right-0 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="relative flex items-center gap-3">
-          <GraduationCap className="h-9 w-9 text-ztf-gold" />
-          <span className="text-xl font-bold">ZTF University Institute</span>
+      <div className="mesh-bg relative hidden flex-col items-center justify-center overflow-hidden p-12 text-white lg:flex">
+        <div className="pointer-events-none absolute left-1/4 top-1/4 h-72 w-72 rounded-full bg-ztf-gold/20 blur-[100px] animate-float" />
+        <div className="pointer-events-none absolute bottom-10 right-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl animate-float-delayed" />
+        <div className="relative text-center">
+          <div className="relative mx-auto mb-6 w-fit">
+            <div className="absolute inset-0 scale-110 animate-glow-pulse rounded-full bg-ztf-gold/30 blur-2xl" />
+            <Image
+              src="/images/logo.png"
+              alt="ZTF University Institute"
+              width={100}
+              height={100}
+              className="relative h-24 w-24 rounded-full object-cover drop-shadow-[0_0_30px_rgba(201,168,76,0.4)]"
+            />
+          </div>
+          <h1 className="text-3xl font-bold leading-tight">ZTF Admin Portal</h1>
+          <p className="mt-3 max-w-md text-white/60">Secure access to the management system</p>
         </div>
-        <div className="relative">
-          <h1 className="text-3xl font-bold leading-tight">{t('title')}</h1>
-          <p className="mt-4 max-w-md text-white/70">
-            &ldquo;Empowering World Innovators and Leaders for Global Impact&rdquo;
-          </p>
-        </div>
-        <p className="relative text-xs text-white/40">{t('login_title')} &middot; Supabase Auth</p>
+        <p className="absolute bottom-8 text-xs text-white/40">{t('login_title')} &middot; Supabase Auth</p>
       </div>
 
       {/* Right form panel */}
       <div className="flex items-center justify-center bg-gray-50 px-4 py-12">
-        <div className="w-full max-w-sm">
+        <div className="glass-card w-full max-w-sm rounded-2xl p-6 shadow-glass sm:p-8">
           <div className="mb-8 flex flex-col items-center gap-2 text-center lg:hidden">
             <GraduationCap className="h-10 w-10 text-ztf-navy" />
             <h1 className="text-lg font-bold text-ztf-navy">{t('login_title')}</h1>

@@ -12,10 +12,34 @@ export function DashboardStats({ stats }: { stats: DashboardStatsType }) {
   const tStatus = useTranslations('status');
 
   const cards = [
-    { label: t('total_applications'), value: stats.total, icon: FileText, color: 'text-ztf-navy bg-blue-50' },
-    { label: t('pending'), value: stats.pending, icon: Clock, color: 'text-yellow-600 bg-yellow-50' },
-    { label: t('admitted'), value: stats.admitted, icon: CheckCircle2, color: 'text-green-600 bg-green-50' },
-    { label: t('rejected'), value: stats.rejected, icon: XCircle, color: 'text-red-600 bg-red-50' },
+    {
+      label: t('total_applications'),
+      value: stats.total,
+      icon: FileText,
+      color: 'text-ztf-navy bg-blue-50',
+      gradient: 'from-blue-500/10 to-ztf-navy/10',
+    },
+    {
+      label: t('pending'),
+      value: stats.pending,
+      icon: Clock,
+      color: 'text-yellow-600 bg-yellow-50',
+      gradient: 'from-amber-500/10 to-orange-500/10',
+    },
+    {
+      label: t('admitted'),
+      value: stats.admitted,
+      icon: CheckCircle2,
+      color: 'text-green-600 bg-green-50',
+      gradient: 'from-green-500/10 to-emerald-500/10',
+    },
+    {
+      label: t('rejected'),
+      value: stats.rejected,
+      icon: XCircle,
+      color: 'text-red-600 bg-red-50',
+      gradient: 'from-red-500/10 to-rose-500/10',
+    },
   ];
 
   const statusEntries = [
@@ -33,13 +57,14 @@ export function DashboardStats({ stats }: { stats: DashboardStatsType }) {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map(({ label, value, icon: Icon, color }, i) => (
+        {cards.map(({ label, value, icon: Icon, color, gradient }, i) => (
           <div
             key={label}
-            className="glass-card animate-slide-up rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-gold"
+            className="glass-card animate-slide-up relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-gold"
             style={{ animationDelay: `${i * 75}ms`, animationFillMode: 'backwards' }}
           >
-            <div className="flex items-center justify-between p-5">
+            <div className={`absolute inset-0 bg-gradient-to-br ${gradient}`} />
+            <div className="relative flex items-center justify-between p-5">
               <div>
                 <p className="text-sm text-gray-500">{label}</p>
                 <p className="mt-1 text-2xl font-bold text-gray-800">{value}</p>

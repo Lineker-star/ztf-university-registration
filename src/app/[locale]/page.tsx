@@ -2,10 +2,8 @@ import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import {
-  Annoyed,
   ArrowRight,
   Award,
-  BookOpen,
   CheckCircle2,
   ChevronDown,
   ClipboardCheck,
@@ -15,9 +13,7 @@ import {
   MapPin,
   MessageCircle,
   Phone,
-  School,
   Search,
-  Sparkles,
   UploadCloud,
   Users,
 } from 'lucide-react';
@@ -30,14 +26,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ANGLOPHONE_PROGRAMMES, FRANCOPHONE_PROGRAMMES } from '@/lib/constants/programmes';
 import { CONTACT_INFO } from '@/lib/constants/contact';
+import { HIGHER_INSTITUTES, STANDALONE_SCHOOL, TOTAL_FIELDS } from '@/lib/constants/institutes';
 
 const STEP_ICONS = [Users, GraduationCap, ClipboardCheck, UploadCloud, Users, CheckCircle2];
-const SCHOOL_KEYS = ['school_1', 'school_2', 'school_3', 'school_4', 'school_5', 'school_6', 'school_7', 'school_8', 'school_9'] as const;
-const SCHOOL_ICONS = [BookOpen, MessageCircle, School, Annoyed, Award, ClipboardCheck, Users, Sparkles, GraduationCap];
 const REQUIREMENT_KEYS = ['hnd', 'btech', 'mtech', 'bts', 'licence', 'master'] as const;
 
 export default function HomePage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
+  const isFr = locale === 'fr';
   const t = useTranslations('home');
   const tContact = useTranslations('contact');
 
@@ -92,7 +88,7 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
                 </div>
               </div>
 
-              <h1 className="mb-3 text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:mb-4 sm:text-6xl md:text-7xl">
+              <h1 className="mb-3 text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:mb-4 sm:text-6xl sm:leading-[1.05] md:text-7xl">
                 {t('title')}
               </h1>
               <p className="mx-auto mt-6 max-w-2xl text-base text-blue-100 sm:text-lg">{t('description')}</p>
@@ -116,14 +112,14 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
 
               <div className="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-3 px-4 sm:grid-cols-4 sm:gap-4">
                 {[
-                  { value: '9', label: t('schools_title') },
-                  { value: '6', label: t('programmes') },
+                  { value: String(HIGHER_INSTITUTES.length), label: t('higher_institutes') },
+                  { value: String(TOTAL_FIELDS), label: t('fields_specialties') },
                   { value: '2026', label: t('academic_year_label') },
                   { value: '2', label: t('languages_label') },
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className="glass-card-dark rounded-2xl p-3 text-center transition-all duration-300 hover:-translate-y-1 hover:bg-white/10 sm:p-4"
+                    className="glass-card-dark flex min-h-[72px] flex-col justify-center rounded-xl p-2.5 text-center transition-all duration-300 hover:-translate-y-1 hover:bg-white/10 sm:min-h-[88px] sm:rounded-2xl sm:p-4"
                   >
                     <p className="text-xl font-bold text-ztf-goldLight sm:text-2xl">{stat.value}</p>
                     <p className="mt-1 text-[10px] leading-tight text-white/70 sm:text-xs">{stat.label}</p>
@@ -210,27 +206,45 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
           </div>
         </section>
 
-        {/* Schools */}
+        {/* Higher Institutes */}
         <section className="bg-white py-16">
           <div className="container">
             <h2 className="text-center text-2xl font-bold text-ztf-navy sm:text-3xl">{t('schools_title')}</h2>
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {SCHOOL_KEYS.map((key, index) => {
-                const Icon = SCHOOL_ICONS[index];
-                return (
-                  <a
-                    key={key}
-                    href={`${CONTACT_INFO.mainSiteUrl}/en/schools`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-xl border border-gray-100 p-6 shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <Icon className="mb-3 h-7 w-7 text-ztf-gold" />
-                    <h4 className="font-semibold text-ztf-navy">{t(key)}</h4>
-                    <p className="mt-2 text-sm text-gray-500">{t(`${key}_desc`)}</p>
-                  </a>
-                );
-              })}
+              {HIGHER_INSTITUTES.map((institute) => (
+                <a
+                  key={institute.key}
+                  href={`${CONTACT_INFO.mainSiteUrl}/${isFr ? 'fr' : 'en'}/schools`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-xl border border-gray-100 p-6 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <GraduationCap className="mb-3 h-7 w-7 text-ztf-gold" />
+                  <span className="text-xs font-bold uppercase tracking-wide text-ztf-gold">
+                    {isFr ? institute.abbreviationFr : institute.abbreviationEn}
+                  </span>
+                  <h4 className="mt-1 font-semibold text-ztf-navy">{isFr ? institute.nameFr : institute.nameEn}</h4>
+                  <ul className="mt-3 space-y-1 text-sm text-gray-500">
+                    {(isFr ? institute.schoolsFr : institute.schoolsEn).map((school) => (
+                      <li key={school}>&bull; {school}</li>
+                    ))}
+                  </ul>
+                </a>
+              ))}
+
+              <a
+                href={`${CONTACT_INFO.mainSiteUrl}/${isFr ? 'fr' : 'en'}/schools`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl border border-dashed border-gray-200 p-6 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <GraduationCap className="mb-3 h-7 w-7 text-ztf-gold" />
+                <span className="text-xs font-bold uppercase tracking-wide text-gray-400">{t('standalone_school')}</span>
+                <h4 className="mt-1 font-semibold text-ztf-navy">
+                  {isFr ? STANDALONE_SCHOOL.nameFr : STANDALONE_SCHOOL.nameEn} (
+                  {isFr ? STANDALONE_SCHOOL.abbreviationFr : STANDALONE_SCHOOL.abbreviationEn})
+                </h4>
+              </a>
             </div>
           </div>
         </section>

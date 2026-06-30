@@ -59,38 +59,48 @@ jobs:
             exit 1
           fi
           echo "Known hosts updated successfully"
-      - name: Restart app with PM2
-        run: |
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} bash -s << 'ENDSSH'
-            export PATH="$HOME/.nvm/versions/node/v20.20.2/bin:$PATH"
-            cd ${{ secrets.DEPLOY_PATH }}
-            cp -r .next/static .next/standalone/.next/static 2>/dev/null || true
-            cp -r public .next/standalone/public 2>/dev/null || true
-            pm2 stop ztf-registration 2>/dev/null || true
-            pm2 delete ztf-registration 2>/dev/null || true
-            pm2 start .next/standalone/server.js --name ztf-registration
-            pm2 save
-            touch tmp/restart.txt
-            pm2 list
-          ENDSSH
-      - name: Deploy to server
+      - name: Package build artifacts
         run: |
           tar -czf deploy.tar.gz \
             .next \
+            public \
             package.json \
             package-lock.json \
             .env.production \
             ecosystem.config.js \
             next.config.js \
             server.js
+
+      - name: Upload to server
+        run: |
           scp -P ${{ secrets.SSH_PORT }} deploy.tar.gz \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/deploy.tar.gz
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} bash << 'ENDSSH'
+
+      - name: Extract and restart with PM2
+        run: |
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} bash -s << 'ENDSSH'
+            export PATH="$HOME/.nvm/versions/node/v20.20.2/bin:$PATH"
             source ~/.profile
             cd ${{ secrets.DEPLOY_PATH }}
+
+            # Extract this deploy's files BEFORE touching the running process.
             tar -xzf ~/deploy.tar.gz
             rm ~/deploy.tar.gz
-            npm install --production
+
+            # Belt-and-suspenders: postbuild already copies these into
+            # .next/standalone/ during the build step, but re-assert it here
+            # in case that ever changes.
+            mkdir -p .next/standalone/public .next/standalone/.next
+            cp -rf public/. .next/standalone/public/
+            cp -rf .next/static .next/standalone/.next/static
+
+            # Only now restart, so PM2 picks up the files we just extracted.
+            pm2 stop ztf-registration 2>/dev/null || true
+            pm2 delete ztf-registration 2>/dev/null || true
+            pm2 start .next/standalone/server.js --name ztf-registration
+            pm2 save
+
             mkdir -p tmp
             touch tmp/restart.txt
+            pm2 list
           ENDSSH
