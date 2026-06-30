@@ -241,21 +241,65 @@ export function ApplicationDetail({ applicationId }: { applicationId: string }) 
           <Card>
             <CardContent className="space-y-4 p-5">
               {data.academic_qualifications.map((q) => (
-                <div key={q.id} className="rounded-md border border-gray-100 p-3">
-                  <p className="font-medium text-gray-800">{q.qualification_type} &mdash; {q.institution_name}</p>
-                  <p className="text-sm text-gray-500">
-                    {q.graduation_year} &middot; {q.gpa_grade}
-                  </p>
+                <div key={q.id} className="rounded-md border border-gray-100 p-4">
+                  <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-semibold text-gray-800">
+                      {q.qualification_type?.toUpperCase()} &mdash; {q.institution_name}
+                    </p>
+                    <span className="text-sm text-gray-500">{q.graduation_year}</span>
+                  </div>
+
+                  {q.qualification_type === 'a_level' && q.subjects && q.subjects.length > 0 ? (
+                    <div>
+                      <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-gray-400">GCE A-Level Subjects</p>
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-100">
+                            <th className="py-1 pr-4 text-left font-medium text-gray-600">Subject</th>
+                            <th className="py-1 text-left font-medium text-gray-600">Grade</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {q.subjects.map((s, i) => (
+                            <tr key={i} className="border-b border-gray-50 last:border-0">
+                              <td className="py-1 pr-4 text-gray-700">{s.name}</td>
+                              <td className="py-1 font-semibold text-ztf-navy">{s.grade}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : q.qualification_type === 'bacc' ? (
+                    <div className="flex flex-wrap gap-6 text-sm">
+                      <div>
+                        <span className="text-xs font-medium uppercase tracking-wide text-gray-400">Series</span>
+                        <p className="font-semibold text-gray-800">{(q as any).bacc_series || '-'}</p>
+                      </div>
+                      <div>
+                        <span className="text-xs font-medium uppercase tracking-wide text-gray-400">Average (/ 20)</span>
+                        <p className="font-semibold text-gray-800">{q.gpa_grade || '-'}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">{q.gpa_grade || '-'}</p>
+                  )}
                 </div>
               ))}
+
+              {data.academic_qualifications.length === 0 && (
+                <p className="text-sm text-gray-400">No qualifications on record.</p>
+              )}
+
               {data.professional_experience?.has_experience && (
-                <div className="rounded-md border border-gray-100 p-3">
-                  <p className="font-medium text-gray-800">Professional Experience</p>
+                <div className="rounded-md border border-gray-100 p-4">
+                  <p className="mb-1 font-semibold text-gray-800">Professional Experience</p>
                   <p className="text-sm text-gray-500">
                     {data.professional_experience.years_of_experience} years &middot;{' '}
                     {data.professional_experience.field_of_specialization}
                   </p>
-                  <p className="mt-1 text-sm text-gray-600">{data.professional_experience.description}</p>
+                  {data.professional_experience.description && (
+                    <p className="mt-1 text-sm text-gray-600">{data.professional_experience.description}</p>
+                  )}
                 </div>
               )}
             </CardContent>

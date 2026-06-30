@@ -31,6 +31,7 @@ export async function GET() {
       deferred: 0,
       by_programme: {},
       by_institute: {},
+      by_field: {},
       this_month: 0,
     };
 

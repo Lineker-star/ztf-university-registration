@@ -5,6 +5,7 @@ import { createAdminSupabaseClient, createServerSupabaseClient } from '@/lib/sup
 import { DashboardStats } from '@/components/admin/DashboardStats';
 import { ApplicationsTable } from '@/components/admin/ApplicationsTable';
 import { InstituteBreakdown } from '@/components/admin/InstituteBreakdown';
+import { AdminSummaryTable } from '@/components/admin/AdminSummaryTable';
 import { Card, CardContent } from '@/components/ui/card';
 import { DashboardStats as DashboardStatsType } from '@/types';
 
@@ -12,7 +13,7 @@ async function getStats(): Promise<DashboardStatsType> {
   const supabase = createAdminSupabaseClient();
   const { data } = await supabase
     .from('applications')
-    .select('status, programme, higher_institute, created_at')
+    .select('status, programme, higher_institute, field_of_study, created_at')
     .eq('is_draft', false);
 
   const now = new Date();
@@ -28,6 +29,7 @@ async function getStats(): Promise<DashboardStatsType> {
     deferred: 0,
     by_programme: {},
     by_institute: {},
+    by_field: {},
     this_month: 0,
   };
 
@@ -35,6 +37,7 @@ async function getStats(): Promise<DashboardStatsType> {
     if (row.status in stats) (stats as any)[row.status] += 1;
     if (row.programme) stats.by_programme[row.programme] = (stats.by_programme[row.programme] ?? 0) + 1;
     if (row.higher_institute) stats.by_institute[row.higher_institute] = (stats.by_institute[row.higher_institute] ?? 0) + 1;
+    if (row.field_of_study) stats.by_field[row.field_of_study] = (stats.by_field[row.field_of_study] ?? 0) + 1;
     if (new Date(row.created_at) >= monthStart) stats.this_month += 1;
   }
 
@@ -127,6 +130,12 @@ export default async function AdminDashboardPage() {
       <DashboardStats stats={stats} />
 
       <InstituteBreakdown byInstitute={stats.by_institute} total={stats.total} />
+
+      <AdminSummaryTable
+        byInstitute={stats.by_institute}
+        byField={stats.by_field}
+        byProgramme={stats.by_programme}
+      />
 
       <Card>
         <CardContent className="p-5">

@@ -172,6 +172,7 @@ export interface DashboardStats {
   deferred: number;
   by_programme: Record<string, number>;
   by_institute: Record<string, number>;
+  by_field: Record<string, number>;
   this_month: number;
 }
 
