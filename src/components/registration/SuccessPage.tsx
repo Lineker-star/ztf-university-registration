@@ -77,6 +77,20 @@ export function SuccessPage({
       <p className="text-2xl font-mono font-bold tracking-wide text-ztf-navy">{applicationNumber}</p>
       <p className="text-sm text-gray-500">{t('success_email')}</p>
 
+      {formData && (
+        <div className="mx-auto w-full max-w-md rounded-xl border-2 border-ztf-gold bg-ztf-gold/10 p-5">
+          <button
+            type="button"
+            onClick={downloadReceipt}
+            className="flex w-full items-center justify-center gap-3 rounded-lg bg-ztf-navy px-6 py-4 text-base font-bold text-white transition-colors hover:bg-ztf-navyDark active:scale-95"
+          >
+            <Download className="h-5 w-5 shrink-0" />
+            {t('download_form')}
+          </button>
+          <p className="mt-2 text-center text-xs text-gray-500">{t('download_form_hint')}</p>
+        </div>
+      )}
+
       <div className="mx-auto max-w-md rounded-lg bg-blue-50 p-5 text-left">
         <h3 className="mb-2 font-semibold text-ztf-navy">{t('success_next')}</h3>
         <ul className="space-y-2 text-sm text-gray-600">
@@ -87,10 +101,6 @@ export function SuccessPage({
       </div>
 
       <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-        <Button onClick={downloadReceipt} variant="outline" disabled={!formData}>
-          <Download className="h-4 w-4" />
-          {t('download_receipt')}
-        </Button>
         <Button asChild variant="outline">
           <a href={whatsappShareUrl} target="_blank" rel="noopener noreferrer">
             <MessageCircle className="h-4 w-4" />

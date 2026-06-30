@@ -16,6 +16,7 @@ import { fullName } from '@/lib/utils/helpers';
 import { DOCUMENT_REQUIREMENTS } from '@/lib/constants/documents';
 import { getInstitute, getField, getSpecialtiesByField, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
 import type { RegistrationFormData } from '@/types';
+import { generateApplicationPdf } from '@/lib/utils/generateApplicationPdf';
 
 function ReviewRow({ label, value }: { label: string; value?: string | null }) {
   return (
@@ -66,11 +67,22 @@ export default function Step6Review() {
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error ?? 'Submission failed');
 
-      // Snapshot before resetForm() clears the store, so the success page
-      // (and its PDF download) still has the data that was just submitted.
-      setSubmittedData(formData);
+      // Snapshot before resetForm() so the success page still has the data.
+      const snapshot = formData;
+      setSubmittedData(snapshot);
       setApplicationNumber(data.applicationNumber);
       resetForm();
+
+      // Auto-trigger PDF while still inside the click-handler async chain
+      // so browsers treat this as user-initiated (avoids pop-up blockers).
+      generateApplicationPdf({
+        applicationNumber: data.applicationNumber,
+        locale: locale as 'en' | 'fr',
+        personal: snapshot.step1,
+        qualifications: snapshot.step2.qualifications,
+        programme: snapshot.step3,
+        guardian: snapshot.step5,
+      });
     } catch (err: any) {
       setError(err.message ?? 'Submission failed');
     } finally {

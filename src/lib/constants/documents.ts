@@ -26,8 +26,8 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
   },
   {
     type: 'academic_certificates',
-    labelEn: 'Academic Certificates (O/L, A/L, BAC, etc.)',
-    labelFr: 'Diplômes Académiques (BEPC, BAC, etc.)',
+    labelEn: 'Certificate or Results Slip',
+    labelFr: 'Certificat ou Relevé de Résultats',
     required: true,
     maxSizeMB: 10,
     acceptedTypes: ['application/pdf', 'image/jpeg', 'image/png'],
@@ -47,14 +47,6 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
     required: true,
     maxSizeMB: 5,
     acceptedTypes: ['image/jpeg', 'image/png'],
-  },
-  {
-    type: 'payment_proof',
-    labelEn: 'Proof of Registration Fee Payment',
-    labelFr: "Reçu de Paiement des Frais d'Inscription",
-    required: true,
-    maxSizeMB: 5,
-    acceptedTypes: ['application/pdf', 'image/jpeg', 'image/png'],
   },
   {
     type: 'recommendation_letter',
