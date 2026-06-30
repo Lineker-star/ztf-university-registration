@@ -94,8 +94,6 @@ export async function POST(req: NextRequest) {
         status: 'pending',
         submitted_at: new Date().toISOString(),
         language: formData.language === 'fr' ? 'fr' : 'en',
-        ip_address: ip,
-        user_agent: req.headers.get('user-agent') ?? null,
       })
       .eq('id', applicationId)
       .select()
