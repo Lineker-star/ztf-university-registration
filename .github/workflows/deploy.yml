@@ -62,16 +62,17 @@ jobs:
       - name: Restart app with PM2
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} bash -s << 'ENDSSH'
+            export PATH="$HOME/.nvm/versions/node/v20.20.2/bin:$PATH"
             cd ${{ secrets.DEPLOY_PATH }}
             cp -r .next/static .next/standalone/.next/static 2>/dev/null || true
             cp -r public .next/standalone/public 2>/dev/null || true
-            command -v pm2 >/dev/null 2>&1 || npm install -g pm2
             pm2 stop ztf-registration 2>/dev/null || true
             pm2 delete ztf-registration 2>/dev/null || true
             pm2 start .next/standalone/server.js --name ztf-registration
             pm2 save
             touch tmp/restart.txt
             pm2 list
+          ENDSSH
       - name: Deploy to server
         run: |
           tar -czf deploy.tar.gz \
