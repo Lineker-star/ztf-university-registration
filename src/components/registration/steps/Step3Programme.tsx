@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { StepNavigation } from '@/components/registration/StepNavigation';
+import { FormErrorSummary } from '@/components/registration/FormErrorSummary';
 import { cn } from '@/lib/utils';
 import {
   HIGHER_INSTITUTES,
@@ -42,7 +43,7 @@ export default function Step3Programme() {
     handleSubmit,
     watch,
     setValue,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<Step3FormValues>({
     resolver: zodResolver(step3Schema),
     defaultValues: {
@@ -85,8 +86,14 @@ export default function Step3Programme() {
     router.push('/register/4');
   }
 
+  function onInvalid(formErrors: typeof errors) {
+    // eslint-disable-next-line no-console
+    console.error('Step 3 validation failed:', formErrors);
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-8">
+      <FormErrorSummary errors={errors} />
       <p className="text-sm text-gray-500">{t('subtitle')}</p>
 
       {/* Institute */}

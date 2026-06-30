@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileUploader, UploadedFileInfo } from '@/components/registration/FileUploader';
 import { StepNavigation } from '@/components/registration/StepNavigation';
+import { FormErrorSummary } from '@/components/registration/FormErrorSummary';
 import { COUNTRIES } from '@/lib/constants/countries';
 import { CAMEROON_REGIONS } from '@/lib/constants/programmes';
 
@@ -29,6 +30,13 @@ export default function Step1Personal() {
 
   const [whatsappSameAsPhone, setWhatsappSameAsPhone] = useState(
     !!step1.whatsapp && step1.whatsapp === step1.phone
+  );
+  // Tracks the real uploaded file's name/size/type for display. The RHF
+  // field (passport_photo_url) only stores the URL string, since that's
+  // all the DB column holds — but the FileUploader needs the full object
+  // to show an accurate "uploaded" state instead of a fabricated 0 KB one.
+  const [photoFile, setPhotoFile] = useState<UploadedFileInfo | null>(
+    step1.passport_photo_url ? { url: step1.passport_photo_url, name: 'passport-photo.jpg', size: 0, mimeType: 'image/jpeg' } : null
   );
 
   const {
@@ -53,7 +61,7 @@ export default function Step1Personal() {
       whatsapp: step1.whatsapp ?? '',
       address: step1.address ?? '',
       city: step1.city ?? '',
-      region: step1.region ?? '',
+      region: step1.region ?? (step1.country === 'Cameroon' || !step1.country ? CAMEROON_REGIONS[0] : ''),
       country: step1.country ?? 'Cameroon',
       marital_status: step1.marital_status ?? 'single',
       religion: step1.religion ?? '',
@@ -62,14 +70,15 @@ export default function Step1Personal() {
   });
 
   const selectedCountry = watch('country');
-  const photoUrl = watch('passport_photo_url');
-  const photoValue: UploadedFileInfo | null = photoUrl
-    ? { url: photoUrl, name: 'passport-photo.jpg', size: 0, mimeType: 'image/jpeg' }
-    : null;
 
   function onSubmit(values: Step1FormValues) {
     updateStep1(values);
     router.push('/register/2');
+  }
+
+  function onInvalid(formErrors: typeof errors) {
+    // eslint-disable-next-line no-console
+    console.error('Step 1 validation failed:', formErrors);
   }
 
   const fieldError = (key: keyof Step1FormValues) => {
@@ -79,7 +88,8 @@ export default function Step1Personal() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-6">
+      <FormErrorSummary errors={errors} />
       <p className="text-sm text-gray-500">{t('subtitle')}</p>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -272,8 +282,11 @@ export default function Step1Personal() {
           label={t('photo')}
           maxSizeMB={2}
           acceptedTypes={['image/jpeg', 'image/png']}
-          value={photoValue}
-          onChange={(file) => setValue('passport_photo_url', file?.url ?? null)}
+          value={photoFile}
+          onChange={(file) => {
+            setPhotoFile(file);
+            setValue('passport_photo_url', file?.url ?? null, { shouldValidate: true });
+          }}
         />
       )}
       <p className="text-xs text-gray-400">{t('photo_hint')}</p>

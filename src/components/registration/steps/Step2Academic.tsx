@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { StepNavigation } from '@/components/registration/StepNavigation';
+import { FormErrorSummary } from '@/components/registration/FormErrorSummary';
 
 const QUALIFICATION_TYPES = ['o_level', 'a_level', 'bacc', 'hnd_cert', 'degree'] as const;
 
@@ -55,8 +56,14 @@ export default function Step2Academic() {
     router.push('/register/3');
   }
 
+  function onInvalid(formErrors: typeof errors) {
+    // eslint-disable-next-line no-console
+    console.error('Step 2 validation failed:', formErrors);
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-6">
+      <FormErrorSummary errors={errors} />
       <p className="text-sm text-gray-500">{t('subtitle')}</p>
 
       <div className="space-y-4">

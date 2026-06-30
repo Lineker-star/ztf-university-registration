@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { StepNavigation } from '@/components/registration/StepNavigation';
+import { FormErrorSummary } from '@/components/registration/FormErrorSummary';
 import { cn } from '@/lib/utils';
 
 const SPONSOR_TYPES = [
@@ -75,8 +76,14 @@ export default function Step5Guardian() {
     router.push('/register/6');
   }
 
+  function onInvalid(formErrors: typeof errors) {
+    // eslint-disable-next-line no-console
+    console.error('Step 5 validation failed:', formErrors);
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-6">
+      <FormErrorSummary errors={errors} />
       <p className="text-sm text-gray-500">{t('subtitle')}</p>
 
       <div>
