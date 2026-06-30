@@ -18,7 +18,7 @@ import { ApplicationsTable } from '@/components/admin/ApplicationsTable';
 import { ExportButtons } from '@/components/admin/ExportButtons';
 import { ApplicationListItem } from '@/types';
 import { STATUS_OPTIONS, debounce } from '@/lib/utils/helpers';
-import { ALL_PROGRAMMES } from '@/lib/constants/programmes';
+import { HIGHER_INSTITUTES, MAIN_PROGRAMMES, getFieldsByInstitute } from '@/lib/constants/programmes';
 
 const PAGE_SIZE = 20;
 
@@ -31,11 +31,15 @@ export default function AdminApplicationsPage() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [programme, setProgramme] = useState('all');
+  const [institute, setInstitute] = useState('all');
+  const [field, setField] = useState('all');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState<string>('');
+
+  const instituteFields = useMemo(() => (institute !== 'all' ? getFieldsByInstitute(institute) : []), [institute]);
 
   const fetchApplications = useCallback(
     async (searchValue: string) => {
@@ -43,6 +47,8 @@ export default function AdminApplicationsPage() {
       const params = new URLSearchParams({ page: String(page), limit: String(PAGE_SIZE) });
       if (status !== 'all') params.set('status', status);
       if (programme !== 'all') params.set('programme', programme);
+      if (institute !== 'all') params.set('institute', institute);
+      if (field !== 'all') params.set('field', field);
       if (dateFrom) params.set('date_from', dateFrom);
       if (dateTo) params.set('date_to', dateTo);
       if (searchValue) params.set('search', searchValue);
@@ -58,7 +64,7 @@ export default function AdminApplicationsPage() {
         setLoading(false);
       }
     },
-    [page, status, programme, dateFrom, dateTo]
+    [page, status, programme, institute, field, dateFrom, dateTo]
   );
 
   const debouncedFetch = useMemo(() => debounce((value: string) => fetchApplications(value), 400), [fetchApplications]);
@@ -66,7 +72,7 @@ export default function AdminApplicationsPage() {
   useEffect(() => {
     debouncedFetch(search);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, page, status, programme, dateFrom, dateTo]);
+  }, [search, page, status, programme, institute, field, dateFrom, dateTo]);
 
   function toggleSelect(id: string) {
     setSelectedIds((prev) => {
@@ -146,6 +152,48 @@ export default function AdminApplicationsPage() {
             </Select>
 
             <Select
+              value={institute}
+              onValueChange={(v) => {
+                setPage(1);
+                setInstitute(v);
+                setField('all');
+              }}
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Institute" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Institutes</SelectItem>
+                {HIGHER_INSTITUTES.map((inst) => (
+                  <SelectItem key={inst.id} value={inst.id}>
+                    {inst.acronymEn} — {inst.nameEn}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={field}
+              onValueChange={(v) => {
+                setPage(1);
+                setField(v);
+              }}
+              disabled={institute === 'all'}
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Field" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Fields</SelectItem>
+                {instituteFields.map((f) => (
+                  <SelectItem key={f.id} value={f.id}>
+                    {f.numberLabel} — {f.en}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
               value={programme}
               onValueChange={(v) => {
                 setPage(1);
@@ -157,9 +205,9 @@ export default function AdminApplicationsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('all_programmes')}</SelectItem>
-                {Object.keys(ALL_PROGRAMMES).map((p) => (
-                  <SelectItem key={p} value={p}>
-                    {p}
+                {MAIN_PROGRAMMES.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.id.toUpperCase()}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -186,7 +234,7 @@ export default function AdminApplicationsPage() {
               }}
             />
 
-            {(search || status !== 'all' || programme !== 'all' || dateFrom || dateTo) && (
+            {(search || status !== 'all' || programme !== 'all' || institute !== 'all' || field !== 'all' || dateFrom || dateTo) && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -195,6 +243,8 @@ export default function AdminApplicationsPage() {
                   setSearch('');
                   setStatus('all');
                   setProgramme('all');
+                  setInstitute('all');
+                  setField('all');
                   setDateFrom('');
                   setDateTo('');
                 }}

@@ -14,6 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { SuccessPage } from '@/components/registration/SuccessPage';
 import { fullName } from '@/lib/utils/helpers';
 import { DOCUMENT_REQUIREMENTS } from '@/lib/constants/documents';
+import { getInstitute, getField, getSpecialtiesByField, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
 
 function ReviewRow({ label, value }: { label: string; value?: string | null }) {
   return (
@@ -127,10 +128,26 @@ export default function Step6Review() {
           </Button>
         </div>
         <div className="rounded-md border border-gray-100 p-4">
-          <ReviewRow label={tProgramme('system')} value={step3.academic_system && tProgramme(step3.academic_system)} />
-          <ReviewRow label={tProgramme('programme')} value={step3.programme} />
-          <ReviewRow label={tProgramme('department')} value={step3.department} />
-          <ReviewRow label={tProgramme('intake')} value={step3.intake_session} />
+          {(() => {
+            const isFr = locale === 'fr';
+            const institute = step3.higher_institute ? getInstitute(step3.higher_institute) : undefined;
+            const field = step3.higher_institute && step3.field_of_study ? getField(step3.higher_institute, step3.field_of_study) : undefined;
+            const specialty = getSpecialtiesByField(field).find((s) => s.id === step3.specialty);
+            const programme = MAIN_PROGRAMMES.find((p) => p.id === step3.programme);
+            return (
+              <>
+                <ReviewRow
+                  label={t('higher_institute')}
+                  value={institute && `${isFr ? institute.acronymFr : institute.acronymEn} — ${isFr ? institute.nameFr : institute.nameEn}`}
+                />
+                <ReviewRow label={t('field_of_study')} value={field && (isFr ? field.fr : field.en)} />
+                {step3.sub_department && <ReviewRow label={t('sub_department')} value={step3.sub_department} />}
+                <ReviewRow label={t('specialty')} value={specialty && (isFr ? specialty.fr : specialty.en)} />
+                <ReviewRow label={tProgramme('programme')} value={programme && (isFr ? programme.fr : programme.en)} />
+                <ReviewRow label={tProgramme('intake')} value={step3.intake_session} />
+              </>
+            );
+          })()}
         </div>
       </section>
 

@@ -12,6 +12,8 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get('status');
     const programme = searchParams.get('programme');
+    const institute = searchParams.get('institute');
+    const field = searchParams.get('field');
     const search = searchParams.get('search')?.trim();
     const dateFrom = searchParams.get('date_from');
     const dateTo = searchParams.get('date_to');
@@ -25,8 +27,8 @@ export async function GET(req: NextRequest) {
       .from('applications')
       .select(
         `
-        id, application_number, status, programme, department,
-        academic_system, submitted_at, created_at, language,
+        id, application_number, status, programme, higher_institute, field_of_study,
+        submitted_at, created_at, language,
         ${personalInfoSelector}(first_name, last_name, email, phone)
       `,
         { count: 'exact' }
@@ -37,6 +39,8 @@ export async function GET(req: NextRequest) {
 
     if (status && status !== 'all') query = query.eq('status', status);
     if (programme && programme !== 'all') query = query.eq('programme', programme);
+    if (institute && institute !== 'all') query = query.eq('higher_institute', institute);
+    if (field && field !== 'all') query = query.eq('field_of_study', field);
     if (dateFrom) query = query.gte('created_at', dateFrom);
     if (dateTo) query = query.lte('created_at', `${dateTo}T23:59:59`);
     if (search) {

@@ -30,6 +30,7 @@ import { StatusBadge } from '@/components/admin/StatusBadge';
 import { DocumentViewer, resolveDocumentUrl } from '@/components/admin/DocumentViewer';
 import { ApplicationDetailData } from '@/types';
 import { formatDateTime, fullName, STATUS_OPTIONS } from '@/lib/utils/helpers';
+import { getInstitute, getField, getSpecialtiesByField, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
 import { useToast } from '@/components/ui/use-toast';
 
 export function ApplicationDetail({ applicationId }: { applicationId: string }) {
@@ -237,14 +238,28 @@ export function ApplicationDetail({ applicationId }: { applicationId: string }) 
         <TabsContent value="programme">
           <Card>
             <CardContent className="grid gap-3 p-5 sm:grid-cols-2">
-              <Field label="System" value={data.academic_system} />
-              <Field label="Programme" value={data.programme} />
-              <Field label="Department" value={data.department} />
-              <Field label="Specialization" value={data.specialization} />
-              <Field label="Study Mode" value={data.study_mode} />
-              <Field label="Intake" value={data.intake_session} />
-              <Field label="Academic Year" value={data.academic_year} />
-              <Field label="Second Choice" value={data.second_choice_programme} />
+              {(() => {
+                const institute = data.higher_institute ? getInstitute(data.higher_institute) : undefined;
+                const field =
+                  data.higher_institute && data.field_of_study ? getField(data.higher_institute, data.field_of_study) : undefined;
+                const specialty = getSpecialtiesByField(field).find((s) => s.id === data.specialty);
+                const programme = MAIN_PROGRAMMES.find((p) => p.id === data.programme);
+                return (
+                  <>
+                    <Field
+                      label="Higher Institute"
+                      value={institute ? `${institute.acronymEn} — ${institute.nameEn}` : data.higher_institute}
+                    />
+                    <Field label="Field" value={field ? `${field.numberLabel} — ${field.en}` : data.field_of_study} />
+                    {data.sub_department && <Field label="Department" value={data.sub_department} />}
+                    <Field label="Specialty" value={specialty?.en ?? data.specialty} />
+                    <Field label="Programme" value={programme?.en ?? data.programme} />
+                    <Field label="Study Mode" value={data.study_mode} />
+                    <Field label="Intake" value={data.intake_session} />
+                    <Field label="Academic Year" value={data.academic_year} />
+                  </>
+                );
+              })()}
             </CardContent>
           </Card>
         </TabsContent>

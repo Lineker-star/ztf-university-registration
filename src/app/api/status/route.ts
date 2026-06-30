@@ -17,8 +17,8 @@ export async function GET(req: NextRequest) {
       .from('applications')
       .select(
         `
-        id, application_number, status, programme, academic_system,
-        submitted_at, created_at, department, specialization,
+        id, application_number, status, programme, higher_institute,
+        submitted_at, created_at, field_of_study, specialty,
         personal_info!inner(first_name, last_name, email)
       `
       )

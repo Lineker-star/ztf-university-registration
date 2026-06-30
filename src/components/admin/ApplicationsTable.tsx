@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { ApplicationListItem } from '@/types';
 import { formatDate, fullName } from '@/lib/utils/helpers';
+import { getInstitute, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
 
 interface ApplicationsTableProps {
   applications: ApplicationListItem[];
@@ -17,6 +18,12 @@ interface ApplicationsTableProps {
   selectedIds?: Set<string>;
   onToggleSelect?: (id: string) => void;
   onToggleSelectAll?: () => void;
+}
+
+function programmeLabel(app: ApplicationListItem): string {
+  const institute = app.higher_institute ? getInstitute(app.higher_institute) : undefined;
+  const programme = MAIN_PROGRAMMES.find((p) => p.id === app.programme);
+  return [institute?.acronymEn, programme?.id.toUpperCase()].filter(Boolean).join(' · ') || '-';
 }
 
 export function ApplicationsTable({
@@ -68,7 +75,7 @@ export function ApplicationsTable({
                 <TableCell className="font-mono text-sm">{app.application_number}</TableCell>
                 <TableCell>{fullName(app.personal_info?.first_name, app.personal_info?.last_name)}</TableCell>
                 <TableCell className="text-sm text-gray-500">{app.personal_info?.email ?? '-'}</TableCell>
-                <TableCell>{app.programme ?? '-'}</TableCell>
+                <TableCell>{programmeLabel(app)}</TableCell>
                 <TableCell>
                   <StatusBadge status={app.status} />
                 </TableCell>
@@ -109,7 +116,7 @@ export function ApplicationsTable({
             </p>
             <p className="text-sm text-gray-500">{app.personal_info?.email ?? '-'}</p>
             <p className="text-sm text-gray-500">
-              {app.programme ?? '-'} &middot; {formatDate(app.submitted_at ?? app.created_at)}
+              {programmeLabel(app)} &middot; {formatDate(app.submitted_at ?? app.created_at)}
             </p>
             <Button asChild variant="outline" size="sm" className="w-full">
               <Link href={`/admin/applications/${app.id}`}>

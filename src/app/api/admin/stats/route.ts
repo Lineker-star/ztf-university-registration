@@ -13,7 +13,7 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from('applications')
-      .select('status, programme, created_at')
+      .select('status, programme, higher_institute, created_at')
       .eq('is_draft', false);
 
     if (error) throw error;
@@ -30,6 +30,7 @@ export async function GET() {
       rejected: 0,
       deferred: 0,
       by_programme: {},
+      by_institute: {},
       this_month: 0,
     };
 
@@ -39,6 +40,9 @@ export async function GET() {
       }
       if (row.programme) {
         stats.by_programme[row.programme] = (stats.by_programme[row.programme] ?? 0) + 1;
+      }
+      if (row.higher_institute) {
+        stats.by_institute[row.higher_institute] = (stats.by_institute[row.higher_institute] ?? 0) + 1;
       }
       if (new Date(row.created_at) >= monthStart) {
         stats.this_month += 1;

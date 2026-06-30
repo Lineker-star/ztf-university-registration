@@ -3,6 +3,7 @@ import autoTable from 'jspdf-autotable';
 
 import { ApplicationListItem } from '@/types';
 import { formatDate, fullName } from './helpers';
+import { getInstitute, getField, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
 
 export function buildExportUrl(
   format: 'excel',
@@ -24,19 +25,25 @@ export function exportApplicationsToPDF(applications: ApplicationListItem[], tit
   doc.setTextColor(100);
   doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 22);
 
-  const rows = applications.map((app) => [
-    app.application_number,
-    fullName(app.personal_info?.first_name, app.personal_info?.last_name),
-    app.personal_info?.email ?? '-',
-    app.programme ?? '-',
-    app.department ?? '-',
-    app.status,
-    formatDate(app.submitted_at ?? app.created_at),
-  ]);
+  const rows = applications.map((app) => {
+    const institute = app.higher_institute ? getInstitute(app.higher_institute) : undefined;
+    const field = app.higher_institute && app.field_of_study ? getField(app.higher_institute, app.field_of_study) : undefined;
+    const programme = MAIN_PROGRAMMES.find((p) => p.id === app.programme);
+    return [
+      app.application_number,
+      fullName(app.personal_info?.first_name, app.personal_info?.last_name),
+      app.personal_info?.email ?? '-',
+      institute?.acronymEn ?? '-',
+      field?.en ?? '-',
+      programme?.id.toUpperCase() ?? '-',
+      app.status,
+      formatDate(app.submitted_at ?? app.created_at),
+    ];
+  });
 
   autoTable(doc, {
     startY: 28,
-    head: [['App No.', 'Name', 'Email', 'Programme', 'Department', 'Status', 'Date']],
+    head: [['App No.', 'Name', 'Email', 'Institute', 'Field', 'Programme', 'Status', 'Date']],
     body: rows,
     headStyles: { fillColor: [0, 59, 122] },
     styles: { fontSize: 8 },

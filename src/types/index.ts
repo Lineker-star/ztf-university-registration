@@ -7,9 +7,8 @@ export type ApplicationStatus =
   | 'deferred'
   | 'withdrawn';
 
-export type Programme = 'HND' | 'BTech' | 'MTech' | 'BTS' | 'Licence' | 'Master';
+export type Programme = 'hnd' | 'bts' | 'bachelor' | 'licence' | 'master';
 export type StudyMode = 'full_time' | 'part_time' | 'distance';
-export type AcademicSystem = 'anglophone' | 'francophone';
 export type Locale = 'en' | 'fr';
 
 export interface Application {
@@ -17,14 +16,14 @@ export interface Application {
   application_number: string;
   status: ApplicationStatus;
   language: Locale;
-  academic_system: AcademicSystem | null;
+  higher_institute: string | null; // HigherInstitute.id
+  field_of_study: string | null; // Field.id
+  sub_department: string | null; // SubDepartment.en (Health Sciences only)
+  specialty: string | null; // Specialty.id
   programme: Programme | null;
-  department: string | null;
-  specialization: string | null;
   study_mode: StudyMode;
   intake_session: string | null;
   academic_year: string | null;
-  second_choice_programme: Programme | null;
   why_ztf: string | null;
   career_goals: string | null;
   referral_source: string | null;
@@ -135,14 +134,14 @@ export interface RegistrationFormData {
   step3: Partial<
     Pick<
       Application,
-      | 'academic_system'
+      | 'higher_institute'
+      | 'field_of_study'
+      | 'sub_department'
+      | 'specialty'
       | 'programme'
-      | 'department'
-      | 'specialization'
       | 'study_mode'
       | 'intake_session'
       | 'academic_year'
-      | 'second_choice_programme'
       | 'why_ztf'
       | 'career_goals'
       | 'referral_source'
@@ -171,6 +170,7 @@ export interface DashboardStats {
   rejected: number;
   deferred: number;
   by_programme: Record<string, number>;
+  by_institute: Record<string, number>;
   this_month: number;
 }
 
@@ -179,8 +179,8 @@ export interface ApplicationListItem {
   application_number: string;
   status: ApplicationStatus;
   programme: Programme | null;
-  department: string | null;
-  academic_system: AcademicSystem | null;
+  higher_institute: string | null;
+  field_of_study: string | null;
   submitted_at: string | null;
   created_at: string;
   language: Locale;

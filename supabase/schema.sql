@@ -16,14 +16,17 @@ CREATE TABLE applications (
     'pending', 'under_review', 'shortlisted', 'admitted', 'rejected', 'deferred', 'withdrawn'
   )),
   language VARCHAR(5) DEFAULT 'en' CHECK (language IN ('en', 'fr')),
-  academic_system VARCHAR(15) CHECK (academic_system IN ('anglophone', 'francophone')),
-  programme VARCHAR(20) CHECK (programme IN ('HND', 'BTech', 'MTech', 'BTS', 'Licence', 'Master')),
-  department VARCHAR(100),
-  specialization VARCHAR(100),
+  -- Official ZTF institute hierarchy: 3 Higher Institutes (HILEPMAH, HIACOMST,
+  -- HIHS), 7 fields between them, each field's specialties, and (Health
+  -- Sciences only) a sub-department. See src/lib/constants/programmes.ts.
+  higher_institute VARCHAR(50),
+  field_of_study VARCHAR(100),
+  sub_department VARCHAR(100),
+  specialty VARCHAR(150),
+  programme VARCHAR(20) CHECK (programme IS NULL OR programme IN ('hnd', 'bts', 'bachelor', 'licence', 'master')),
   study_mode VARCHAR(20) DEFAULT 'full_time',
   intake_session VARCHAR(50),
   academic_year VARCHAR(20),
-  second_choice_programme VARCHAR(20),
   why_ztf TEXT,
   career_goals TEXT,
   referral_source VARCHAR(50),
@@ -194,6 +197,8 @@ CREATE TABLE email_log (
 -- =============================================
 CREATE INDEX idx_applications_status ON applications(status);
 CREATE INDEX idx_applications_programme ON applications(programme);
+CREATE INDEX idx_applications_institute ON applications(higher_institute);
+CREATE INDEX idx_applications_field ON applications(field_of_study);
 CREATE INDEX idx_applications_created_at ON applications(created_at DESC);
 CREATE INDEX idx_applications_number ON applications(application_number);
 CREATE INDEX idx_personal_info_email ON personal_info(email);

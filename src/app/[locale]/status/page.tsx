@@ -15,11 +15,15 @@ import { StatusBadge } from '@/components/admin/StatusBadge';
 import { formatDate, fullName } from '@/lib/utils/helpers';
 import { cn } from '@/lib/utils';
 import { ApplicationStatus } from '@/types';
+import { getInstitute, MAIN_PROGRAMMES } from '@/lib/constants/programmes';
 
 interface StatusResult {
   application_number: string;
   status: ApplicationStatus;
   programme: string | null;
+  higher_institute: string | null;
+  field_of_study: string | null;
+  specialty: string | null;
   submitted_at: string | null;
   created_at: string;
   personal_info: { first_name: string; last_name: string } | null;
@@ -149,7 +153,14 @@ export default function StatusPage() {
                   {fullName(result.personal_info?.first_name, result.personal_info?.last_name)}
                 </p>
                 <p className="mt-1 text-sm text-gray-500">
-                  {t('programme_label')}: {result.programme ?? '-'}
+                  {t('programme_label')}:{' '}
+                  {(() => {
+                    const institute = result.higher_institute ? getInstitute(result.higher_institute) : undefined;
+                    const programme = MAIN_PROGRAMMES.find((p) => p.id === result.programme);
+                    const programmeLabel = programme ? (locale === 'fr' ? programme.fr : programme.en) : null;
+                    const instituteLabel = institute ? (locale === 'fr' ? institute.acronymFr : institute.acronymEn) : null;
+                    return [programmeLabel, instituteLabel].filter(Boolean).join(' · ') || '-';
+                  })()}
                 </p>
                 <p className="mt-1 text-sm text-gray-500">
                   {t('submitted_on')}: {formatDate(result.submitted_at ?? result.created_at, locale)}

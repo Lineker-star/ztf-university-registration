@@ -3,7 +3,6 @@ import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import {
   ArrowRight,
-  Award,
   CheckCircle2,
   ChevronDown,
   ClipboardCheck,
@@ -24,9 +23,8 @@ import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ANGLOPHONE_PROGRAMMES, FRANCOPHONE_PROGRAMMES } from '@/lib/constants/programmes';
+import { HIGHER_INSTITUTES, MAIN_PROGRAMMES, TOTAL_FIELDS } from '@/lib/constants/programmes';
 import { CONTACT_INFO } from '@/lib/constants/contact';
-import { HIGHER_INSTITUTES, STANDALONE_SCHOOL, TOTAL_FIELDS } from '@/lib/constants/institutes';
 
 const STEP_ICONS = [Users, GraduationCap, ClipboardCheck, UploadCloud, Users, CheckCircle2];
 const REQUIREMENT_KEYS = ['hnd', 'btech', 'mtech', 'bts', 'licence', 'master'] as const;
@@ -36,9 +34,6 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
   const isFr = locale === 'fr';
   const t = useTranslations('home');
   const tContact = useTranslations('contact');
-
-  const anglophoneEntries = Object.entries(ANGLOPHONE_PROGRAMMES);
-  const francophoneEntries = Object.entries(FRANCOPHONE_PROGRAMMES);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -159,98 +154,54 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
           </div>
         </section>
 
-        {/* Programmes */}
+        {/* Higher Institutes */}
         <section className="bg-gray-50 py-16">
           <div className="container">
-            <h2 className="text-center text-2xl font-bold text-ztf-navy sm:text-3xl">{t('programmes')}</h2>
-
-            <div className="mt-10">
-              <h3 className="mb-4 text-lg font-semibold text-ztf-navyLight">{t('anglophone_programmes')}</h3>
-              <div className="grid gap-6 sm:grid-cols-3">
-                {anglophoneEntries.map(([key, programme], i) => (
-                  <div
-                    key={key}
-                    className="glass-card animate-slide-up rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-gold"
-                    style={{ animationDelay: `${i * 75}ms`, animationFillMode: 'backwards' }}
-                  >
-                    <Award className="mb-3 h-8 w-8 text-ztf-gold" />
-                    <h4 className="font-bold text-ztf-navy">{programme.label}</h4>
-                    <p className="mt-2 text-sm text-gray-500">
-                      {programme.departments.slice(0, 3).join(', ')}
-                      {programme.departments.length > 3 ? '...' : ''}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-12">
-              <h3 className="mb-4 text-lg font-semibold text-ztf-navyLight">{t('francophone_programmes')}</h3>
-              <div className="grid gap-6 sm:grid-cols-3">
-                {francophoneEntries.map(([key, programme], i) => (
-                  <div
-                    key={key}
-                    className="glass-card animate-slide-up rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-gold"
-                    style={{ animationDelay: `${i * 75}ms`, animationFillMode: 'backwards' }}
-                  >
-                    <Award className="mb-3 h-8 w-8 text-ztf-gold" />
-                    <h4 className="font-bold text-ztf-navy">{programme.label}</h4>
-                    <p className="mt-2 text-sm text-gray-500">
-                      {programme.departments.slice(0, 3).join(', ')}
-                      {programme.departments.length > 3 ? '...' : ''}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Higher Institutes */}
-        <section className="bg-white py-16">
-          <div className="container">
             <h2 className="text-center text-2xl font-bold text-ztf-navy sm:text-3xl">{t('schools_title')}</h2>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {HIGHER_INSTITUTES.map((institute) => (
-                <a
-                  key={institute.key}
-                  href={`${CONTACT_INFO.mainSiteUrl}/${isFr ? 'fr' : 'en'}/schools`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-xl border border-gray-100 p-6 shadow-sm transition-shadow hover:shadow-md"
+            <div className="mt-10 grid gap-6 lg:grid-cols-3">
+              {HIGHER_INSTITUTES.map((institute, i) => (
+                <div
+                  key={institute.id}
+                  className="glass-card animate-slide-up rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-gold"
+                  style={{ animationDelay: `${i * 75}ms`, animationFillMode: 'backwards' }}
                 >
                   <GraduationCap className="mb-3 h-7 w-7 text-ztf-gold" />
                   <span className="text-xs font-bold uppercase tracking-wide text-ztf-gold">
-                    {isFr ? institute.abbreviationFr : institute.abbreviationEn}
+                    {isFr ? institute.acronymFr : institute.acronymEn}
                   </span>
-                  <h4 className="mt-1 font-semibold text-ztf-navy">{isFr ? institute.nameFr : institute.nameEn}</h4>
+                  <h4 className="mt-1 font-semibold leading-snug text-ztf-navy">
+                    {isFr ? institute.nameFr : institute.nameEn}
+                  </h4>
                   <ul className="mt-3 space-y-1 text-sm text-gray-500">
-                    {(isFr ? institute.schoolsFr : institute.schoolsEn).map((school) => (
-                      <li key={school}>&bull; {school}</li>
+                    {institute.fields.map((field) => (
+                      <li key={field.id}>
+                        <span className="font-medium text-gray-400">{field.numberLabel}</span>{' '}
+                        {isFr ? field.fr : field.en}
+                      </li>
                     ))}
                   </ul>
-                </a>
+                </div>
               ))}
+            </div>
 
-              <a
-                href={`${CONTACT_INFO.mainSiteUrl}/${isFr ? 'fr' : 'en'}/schools`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl border border-dashed border-gray-200 p-6 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <GraduationCap className="mb-3 h-7 w-7 text-ztf-gold" />
-                <span className="text-xs font-bold uppercase tracking-wide text-gray-400">{t('standalone_school')}</span>
-                <h4 className="mt-1 font-semibold text-ztf-navy">
-                  {isFr ? STANDALONE_SCHOOL.nameFr : STANDALONE_SCHOOL.nameEn} (
-                  {isFr ? STANDALONE_SCHOOL.abbreviationFr : STANDALONE_SCHOOL.abbreviationEn})
-                </h4>
-              </a>
+            <div className="mt-10 text-center">
+              <p className="mb-3 text-sm font-medium text-gray-500">{t('programmes')}</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {MAIN_PROGRAMMES.map((p) => (
+                  <span
+                    key={p.id}
+                    className="rounded-full border border-ztf-gold/30 bg-ztf-gold/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-ztf-navy"
+                  >
+                    {p.id.toUpperCase()}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
         {/* Why ZTF */}
-        <section className="bg-gray-50 py-16">
+        <section className="bg-white py-16">
           <div className="container">
             <h2 className="text-center text-2xl font-bold text-ztf-navy sm:text-3xl">{t('why_title')}</h2>
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -266,7 +217,7 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
         </section>
 
         {/* Admission requirements */}
-        <section className="bg-white py-16">
+        <section className="bg-gray-50 py-16">
           <div className="container max-w-3xl">
             <h2 className="text-center text-2xl font-bold text-ztf-navy sm:text-3xl">{t('requirements_title')}</h2>
             <Accordion type="single" collapsible className="mt-10">
