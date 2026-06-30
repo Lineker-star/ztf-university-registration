@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(echo \"Started with PID $!\")",
+      "Bash(tail -50 /tmp/dev_step4.log)",
+      "Read(//tmp/**)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //F //PID 10668)",
+      "Bash(taskkill //F //PID 1072)",
+      "Bash(curl -s -X POST http://localhost:3002/api/registration/start -H \"Content-Type: application/json\" -d '{\"language\":\"en\"}' -w \"\\\\nSTATUS:%{http_code}\\\\n\" --max-time 20)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(taskkill //F //PID 8752)",
+      "Bash(grep -rn '\"academic\"' src/messages/ -l)",
+      "Bash(find src *)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/messages/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('src/messages/fr.json','utf8'\\)\\); console.log\\('OK'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/messages/en.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('src/messages/fr.json','utf8'\\)\\); console.log\\('JSON OK'\\)\")",
+      "Bash(curl -s http://localhost:3001/en/register/2 -o /tmp/step2_render.html)",
+      "Bash(grep -o '.\\\\{0,40\\\\}qualifying_credential.\\\\{0,80\\\\}' /tmp/step2_render.html)",
+      "Bash(taskkill //F //PID 25492)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
+    ]
+  }
+}

@@ -17,7 +17,28 @@
       "Bash(netstat -ano)",
       "Bash(tail -80 /tmp/dev2.log)",
       "Bash(taskkill //F //PID 28028)",
-      "Bash(taskkill //F //PID 4388)"
+      "Bash(taskkill //F //PID 4388)",
+      "Bash(git fetch *)",
+      "Bash(curl -s \"https://api.github.com/repos/Lineker-star/ztf-university-registration/actions/runs?per_page=8\")",
+      "WebFetch(domain:register.ztfuniversity.com)",
+      "Bash(file public/images/*.*)",
+      "Bash(mkdir -p src/app)",
+      "Bash(mv public/images/logo-navbar.png public/images/logo.png)",
+      "Bash(mv public/images/favicon.ico src/app/favicon.ico)",
+      "Bash(mv public/images/favicon-32.png public/favicon-32x32.png)",
+      "Bash(mv public/images/favicon-192.png public/icon-192.png)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(taskkill //F //PID 8932)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "WebFetch(domain:www.ztfuniversity.com)",
+      "Bash(curl -s -o /tmp/login.html -w \"STATUS:%{http_code}\\\\n\" \"http://localhost:3000/en/admin/login\")",
+      "Bash(taskkill //F //PID 25108)",
+      "Bash(grep -n 'bg-white py-16\\\\|bg-gray-50 py-16\\\\|/\\\\* ' \"src/app/[locale]/page.tsx\")",
+      "Bash(taskkill //F //PID 11304)",
+      "Bash(awk -F'=' '{print $1\"=\"substr\\($2,1,15\\)\"...\"}')",
+      "Bash(taskkill //F //PID 19032)"
     ]
   }
 }
