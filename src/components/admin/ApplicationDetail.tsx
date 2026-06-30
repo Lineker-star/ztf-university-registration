@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import Image from 'next/image';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Download, FileText, Loader2, Mail, Printer, Save } from 'lucide-react';
@@ -220,19 +221,35 @@ export function ApplicationDetail({ applicationId }: { applicationId: string }) 
 
         <TabsContent value="personal">
           <Card>
-            <CardContent className="grid gap-3 p-5 sm:grid-cols-2">
-              <Field label="Name" value={fullName(personal?.first_name, personal?.last_name)} />
-              <Field label="Email" value={personal?.email} />
-              <Field label="Phone" value={personal?.phone} />
-              <Field label="WhatsApp" value={personal?.whatsapp} />
-              <Field label="Date of Birth" value={personal?.date_of_birth} />
-              <Field label="Gender" value={personal?.gender} />
-              <Field label="Nationality" value={personal?.nationality} />
-              <Field label="National ID" value={personal?.national_id} />
-              <Field label="Address" value={personal?.address} />
-              <Field label="City" value={personal?.city} />
-              <Field label="Region" value={personal?.region} />
-              <Field label="Country" value={personal?.country} />
+            <CardContent className="p-5">
+              {personal?.passport_photo_url && (
+                <div className="mb-4 flex justify-center">
+                  <Image
+                    src={personal.passport_photo_url}
+                    alt="Passport photo"
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover ring-2 ring-ztf-gold"
+                  />
+                </div>
+              )}
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Full Name" value={fullName(personal?.first_name, personal?.last_name)} />
+                <Field label="Date of Birth" value={personal?.date_of_birth} />
+                <Field label="Place of Birth" value={(personal as any)?.place_of_birth} />
+                <Field label="Gender" value={personal?.gender} />
+                <Field label="Nationality" value={personal?.nationality} />
+                <Field label="National ID" value={personal?.national_id} />
+                <Field label="Marital Status" value={(personal as any)?.marital_status} />
+                <Field label="Religion" value={(personal as any)?.religion} />
+                <Field label="Email" value={personal?.email} />
+                <Field label="Phone" value={personal?.phone} />
+                <Field label="WhatsApp" value={personal?.whatsapp} />
+                <Field label="Address" value={personal?.address} />
+                <Field label="City" value={personal?.city} />
+                <Field label="Region" value={personal?.region} />
+                <Field label="Country" value={personal?.country} />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -328,6 +345,18 @@ export function ApplicationDetail({ applicationId }: { applicationId: string }) 
                     <Field label="Study Mode" value={data.study_mode} />
                     <Field label="Intake" value={data.intake_session} />
                     <Field label="Academic Year" value={data.academic_year} />
+                    {(data as any).why_ztf && (
+                      <div className="sm:col-span-2">
+                        <p className="mb-1 text-xs uppercase tracking-wide text-gray-400">Why ZTF</p>
+                        <p className="text-sm text-gray-700">{(data as any).why_ztf}</p>
+                      </div>
+                    )}
+                    {(data as any).career_goals && (
+                      <div className="sm:col-span-2">
+                        <p className="mb-1 text-xs uppercase tracking-wide text-gray-400">Career Goals</p>
+                        <p className="text-sm text-gray-700">{(data as any).career_goals}</p>
+                      </div>
+                    )}
                   </>
                 );
               })()}
@@ -363,15 +392,38 @@ export function ApplicationDetail({ applicationId }: { applicationId: string }) 
 
         <TabsContent value="guardian">
           <Card>
-            <CardContent className="grid gap-3 p-5 sm:grid-cols-2">
-              <Field label="Guardian" value={data.guardian_info?.guardian_full_name} />
-              <Field label="Relationship" value={data.guardian_info?.guardian_relationship} />
-              <Field label="Phone" value={data.guardian_info?.guardian_phone} />
-              <Field label="Email" value={data.guardian_info?.guardian_email} />
-              <Field label="Emergency Contact" value={data.guardian_info?.emergency_full_name} />
-              <Field label="Emergency Phone" value={data.guardian_info?.emergency_phone} />
-              <Field label="Sponsor" value={data.guardian_info?.sponsor_type} />
-              <Field label="Sponsor Name" value={data.guardian_info?.sponsor_name} />
+            <CardContent className="space-y-4 p-5">
+              <div>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Guardian / Parent</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="Full Name" value={data.guardian_info?.guardian_full_name} />
+                  <Field label="Relationship" value={data.guardian_info?.guardian_relationship} />
+                  <Field label="Phone" value={data.guardian_info?.guardian_phone} />
+                  <Field label="Email" value={data.guardian_info?.guardian_email} />
+                  <Field label="Address" value={data.guardian_info?.guardian_address} />
+                  <Field label="Occupation" value={data.guardian_info?.guardian_occupation} />
+                  <Field label="Employer" value={data.guardian_info?.guardian_employer} />
+                </div>
+              </div>
+              <div className="border-t border-gray-100 pt-4">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Emergency Contact</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="Full Name" value={data.guardian_info?.emergency_full_name} />
+                  <Field label="Relationship" value={data.guardian_info?.emergency_relationship} />
+                  <Field label="Phone" value={data.guardian_info?.emergency_phone} />
+                  <Field label="Phone 2" value={data.guardian_info?.emergency_phone2} />
+                </div>
+              </div>
+              {data.guardian_info?.sponsor_type && (
+                <div className="border-t border-gray-100 pt-4">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Sponsorship</p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Field label="Sponsor Type" value={data.guardian_info?.sponsor_type} />
+                    <Field label="Sponsor Name" value={data.guardian_info?.sponsor_name} />
+                    <Field label="Sponsor Contact" value={data.guardian_info?.sponsor_contact} />
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

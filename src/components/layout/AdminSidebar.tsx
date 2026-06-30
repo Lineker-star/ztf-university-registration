@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { LayoutDashboard, FileText, FolderOpen, BarChart3, LogOut, GraduationCap, Menu, X } from 'lucide-react';
+import Image from 'next/image';
+import { LayoutDashboard, FileText, FolderOpen, BarChart3, LogOut, Menu, X } from 'lucide-react';
 
 import { Link, usePathname, useRouter } from '@/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -36,7 +37,7 @@ export function AdminSidebar() {
     <>
       <div className="flex h-14 items-center justify-between border-b border-gray-100 bg-white px-4 lg:hidden">
         <div className="flex items-center gap-2 font-bold text-ztf-navy">
-          <GraduationCap className="h-6 w-6 text-ztf-gold" />
+          <Image src="/images/logo.png" alt="ZTF" width={32} height={32} className="rounded-full" />
           ZTF Admin
         </div>
         <button
@@ -60,7 +61,7 @@ export function AdminSidebar() {
         )}
       >
         <div className="hidden h-16 items-center gap-2 border-b border-gray-100 px-6 font-bold text-ztf-navy lg:flex">
-          <GraduationCap className="h-6 w-6 text-ztf-gold" />
+          <Image src="/images/logo.png" alt="ZTF" width={32} height={32} className="rounded-full" />
           ZTF Admin
         </div>
         <nav className="flex-1 space-y-1 p-4">

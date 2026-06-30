@@ -9,15 +9,17 @@ export async function GET() {
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const supabase = createAdminSupabaseClient();
+    // Join via applications to get applicant name and app number.
+    // No is_draft filter here — documents are written during the draft phase
+    // and admins need to see them as soon as they're uploaded.
     const { data, error } = await supabase
       .from('documents')
       .select(
         `id, document_type, document_name, file_url, file_size, mime_type, is_required, is_verified, created_at,
-         applications!inner(application_number, is_draft, personal_info(first_name, last_name))`
+         applications!inner(application_number, personal_info(first_name, last_name))`
       )
-      .eq('applications.is_draft', false)
       .order('created_at', { ascending: false })
-      .limit(200);
+      .limit(500);
 
     if (error) throw error;
 
