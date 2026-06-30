@@ -12,7 +12,8 @@ export function StepIndicator({ currentStep }: { currentStep: number }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center">
+      {/* Desktop / tablet: full stepper */}
+      <div className="hidden items-center sm:flex">
         {STEP_KEYS.map((key, index) => {
           const stepNumber = index + 1;
           const isCompleted = stepNumber < currentStep;
@@ -34,7 +35,7 @@ export function StepIndicator({ currentStep }: { currentStep: number }) {
                 </div>
                 <span
                   className={cn(
-                    'mt-2 hidden max-w-[5.5rem] text-center text-xs font-medium sm:block',
+                    'mt-2 block max-w-[5.5rem] text-center text-xs font-medium',
                     isCurrent ? 'text-ztf-navy' : isCompleted ? 'text-green-700' : 'text-gray-400'
                   )}
                 >
@@ -48,9 +49,22 @@ export function StepIndicator({ currentStep }: { currentStep: number }) {
           );
         })}
       </div>
-      <p className="mt-3 text-center text-sm text-gray-500 sm:hidden">
-        {t(STEP_KEYS[currentStep - 1])} &middot; {currentStep} {t('of')} {STEP_KEYS.length}
-      </p>
+
+      {/* Mobile: compact step counter + progress bar */}
+      <div className="flex items-center justify-between sm:hidden">
+        <span className="text-sm font-medium text-ztf-navy">
+          {t(STEP_KEYS[currentStep - 1])}
+        </span>
+        <span className="shrink-0 text-xs text-gray-400">
+          {currentStep} {t('of')} {STEP_KEYS.length}
+        </span>
+      </div>
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-200 sm:hidden">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-ztf-gold to-ztf-goldLight transition-all duration-500"
+          style={{ width: `${(currentStep / STEP_KEYS.length) * 100}%` }}
+        />
+      </div>
     </div>
   );
 }

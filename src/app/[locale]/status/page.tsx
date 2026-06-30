@@ -80,7 +80,7 @@ export default function StatusPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Navbar />
-      <main className="flex-1 py-12">
+      <main className="flex-1 pb-12 pt-24 sm:pt-28">
         <div className="container max-w-xl">
           <Card className="print:hidden">
             <CardContent className="p-6 sm:p-8">
@@ -128,7 +128,7 @@ export default function StatusPage() {
           </Card>
 
           {result && (
-            <Card className="mt-6">
+            <Card className="glass-card animate-slide-up mt-6 rounded-2xl">
               <CardContent className="p-6 sm:p-8">
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">

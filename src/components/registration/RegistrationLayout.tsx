@@ -72,7 +72,7 @@ export function RegistrationLayout({
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Navbar />
-      <main className="flex-1 py-8">
+      <main className="flex-1 pb-8 pt-24 sm:pt-28">
         <div className="container max-w-3xl">
           <Card>
             <CardContent className="p-6 sm:p-8">

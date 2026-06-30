@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import {
@@ -6,6 +7,7 @@ import {
   Award,
   BookOpen,
   CheckCircle2,
+  ChevronDown,
   ClipboardCheck,
   FileText,
   GraduationCap,
@@ -48,39 +50,71 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-ztf-navyDeep via-ztf-navy to-ztf-navyDeep text-white">
-          <div className="pointer-events-none absolute left-10 top-10 h-72 w-72 rounded-full bg-ztf-gold/10 blur-3xl" />
-          <div className="pointer-events-none absolute bottom-10 right-10 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
+        <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
+          <div className="absolute inset-0">
+            <Image
+              src="/images/hero-background.jpg"
+              alt="ZTF University Institute"
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-ztf-navyDeep/85 via-ztf-navy/85 to-ztf-navyDeep/90" />
+            <div className="absolute inset-0 bg-mesh-gradient opacity-60 mix-blend-overlay" />
+          </div>
 
-          <div className="container relative py-20 sm:py-28">
-            <div className="mx-auto max-w-3xl text-center">
-              <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-ztf-gold/40 bg-ztf-gold/10 px-4 py-1.5 text-sm font-medium text-ztf-goldLight">
-                <Sparkles className="h-4 w-4" />
+          <div className="pointer-events-none absolute left-[10%] top-1/4 h-72 w-72 rounded-full bg-ztf-gold/20 blur-[100px] animate-float" />
+          <div className="pointer-events-none absolute bottom-1/4 right-[10%] h-96 w-96 rounded-full bg-ztf-glow/20 blur-[120px] animate-float-delayed" />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ztf-gold/5 blur-[150px] animate-glow-pulse" />
+
+          <div className="container relative z-10 py-28 text-center sm:py-32">
+            <div className="mx-auto max-w-3xl">
+              <span className="glass-card-dark mb-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-ztf-goldLight sm:mb-8 sm:px-5 sm:text-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ztf-gold opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-ztf-gold" />
+                </span>
                 {t('subtitle')}
               </span>
-              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">{t('title')}</h1>
-              <p className="mx-auto mt-6 max-w-2xl text-lg text-blue-100">{t('description')}</p>
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button asChild size="lg" variant="secondary">
-                  <Link href="/register/1">
-                    {t('start_registration')}
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white/10 hover:text-white"
-                >
-                  <Link href="/status">
-                    <Search className="h-4 w-4" />
-                    {t('check_status')}
-                  </Link>
-                </Button>
+
+              <div className="mb-6 flex justify-center sm:mb-8">
+                <div className="relative">
+                  <div className="absolute inset-0 scale-110 animate-glow-pulse rounded-full bg-ztf-gold/30 blur-2xl" />
+                  <Image
+                    src="/images/logo.png"
+                    alt="ZTF University Institute Seal"
+                    width={110}
+                    height={110}
+                    priority
+                    className="relative h-20 w-20 rounded-full object-cover drop-shadow-[0_0_30px_rgba(201,168,76,0.4)] sm:h-28 sm:w-28"
+                  />
+                </div>
               </div>
 
-              <div className="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-4 sm:grid-cols-4">
+              <h1 className="mb-3 text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:mb-4 sm:text-6xl md:text-7xl">
+                {t('title')}
+              </h1>
+              <p className="mx-auto mt-6 max-w-2xl text-base text-blue-100 sm:text-lg">{t('description')}</p>
+              <div className="mt-10 flex flex-col items-center justify-center gap-3 px-4 sm:flex-row sm:gap-4">
+                <Link
+                  href="/register/1"
+                  className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-ztf-gold to-ztf-goldLight px-8 py-3.5 text-base font-bold text-ztf-navyDeep shadow-glow-gold transition-all duration-300 hover:scale-[1.03] hover:from-ztf-goldLight hover:to-ztf-gold active:scale-95 sm:w-auto sm:px-10 sm:py-4 sm:text-lg"
+                >
+                  <GraduationCap className="h-5 w-5" />
+                  {t('start_registration')}
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  href="/status"
+                  className="glass-card-dark glow-ring flex w-full items-center justify-center gap-2 rounded-2xl px-8 py-3.5 text-base font-semibold text-white transition-all duration-300 hover:bg-white/10 active:scale-95 sm:w-auto sm:py-4 sm:text-lg"
+                >
+                  <Search className="h-5 w-5" />
+                  {t('check_status')}
+                </Link>
+              </div>
+
+              <div className="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-3 px-4 sm:grid-cols-4 sm:gap-4">
                 {[
                   { value: '9', label: t('schools_title') },
                   { value: '6', label: t('programmes') },
@@ -89,14 +123,18 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className="rounded-xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-sm"
+                    className="glass-card-dark rounded-2xl p-3 text-center transition-all duration-300 hover:-translate-y-1 hover:bg-white/10 sm:p-4"
                   >
-                    <p className="text-2xl font-bold text-ztf-goldLight">{stat.value}</p>
-                    <p className="mt-1 text-xs text-white/70">{stat.label}</p>
+                    <p className="text-xl font-bold text-ztf-goldLight sm:text-2xl">{stat.value}</p>
+                    <p className="mt-1 text-[10px] leading-tight text-white/70 sm:text-xs">{stat.label}</p>
                   </div>
                 ))}
               </div>
             </div>
+          </div>
+
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce text-white/40 sm:bottom-8">
+            <ChevronDown className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
         </section>
 
@@ -133,17 +171,19 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
             <div className="mt-10">
               <h3 className="mb-4 text-lg font-semibold text-ztf-navyLight">{t('anglophone_programmes')}</h3>
               <div className="grid gap-6 sm:grid-cols-3">
-                {anglophoneEntries.map(([key, programme]) => (
-                  <Card key={key} className="border-gray-100 transition-shadow hover:shadow-md">
-                    <CardContent className="p-6">
-                      <Award className="mb-3 h-8 w-8 text-ztf-gold" />
-                      <h4 className="font-bold text-ztf-navy">{programme.label}</h4>
-                      <p className="mt-2 text-sm text-gray-500">
-                        {programme.departments.slice(0, 3).join(', ')}
-                        {programme.departments.length > 3 ? '...' : ''}
-                      </p>
-                    </CardContent>
-                  </Card>
+                {anglophoneEntries.map(([key, programme], i) => (
+                  <div
+                    key={key}
+                    className="glass-card animate-slide-up rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-gold"
+                    style={{ animationDelay: `${i * 75}ms`, animationFillMode: 'backwards' }}
+                  >
+                    <Award className="mb-3 h-8 w-8 text-ztf-gold" />
+                    <h4 className="font-bold text-ztf-navy">{programme.label}</h4>
+                    <p className="mt-2 text-sm text-gray-500">
+                      {programme.departments.slice(0, 3).join(', ')}
+                      {programme.departments.length > 3 ? '...' : ''}
+                    </p>
+                  </div>
                 ))}
               </div>
             </div>
@@ -151,17 +191,19 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
             <div className="mt-12">
               <h3 className="mb-4 text-lg font-semibold text-ztf-navyLight">{t('francophone_programmes')}</h3>
               <div className="grid gap-6 sm:grid-cols-3">
-                {francophoneEntries.map(([key, programme]) => (
-                  <Card key={key} className="border-gray-100 transition-shadow hover:shadow-md">
-                    <CardContent className="p-6">
-                      <Award className="mb-3 h-8 w-8 text-ztf-gold" />
-                      <h4 className="font-bold text-ztf-navy">{programme.label}</h4>
-                      <p className="mt-2 text-sm text-gray-500">
-                        {programme.departments.slice(0, 3).join(', ')}
-                        {programme.departments.length > 3 ? '...' : ''}
-                      </p>
-                    </CardContent>
-                  </Card>
+                {francophoneEntries.map(([key, programme], i) => (
+                  <div
+                    key={key}
+                    className="glass-card animate-slide-up rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-gold"
+                    style={{ animationDelay: `${i * 75}ms`, animationFillMode: 'backwards' }}
+                  >
+                    <Award className="mb-3 h-8 w-8 text-ztf-gold" />
+                    <h4 className="font-bold text-ztf-navy">{programme.label}</h4>
+                    <p className="mt-2 text-sm text-gray-500">
+                      {programme.departments.slice(0, 3).join(', ')}
+                      {programme.departments.length > 3 ? '...' : ''}
+                    </p>
+                  </div>
                 ))}
               </div>
             </div>

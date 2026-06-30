@@ -33,9 +33,13 @@ export function DashboardStats({ stats }: { stats: DashboardStatsType }) {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map(({ label, value, icon: Icon, color }) => (
-          <Card key={label}>
-            <CardContent className="flex items-center justify-between p-5">
+        {cards.map(({ label, value, icon: Icon, color }, i) => (
+          <div
+            key={label}
+            className="glass-card animate-slide-up rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-gold"
+            style={{ animationDelay: `${i * 75}ms`, animationFillMode: 'backwards' }}
+          >
+            <div className="flex items-center justify-between p-5">
               <div>
                 <p className="text-sm text-gray-500">{label}</p>
                 <p className="mt-1 text-2xl font-bold text-gray-800">{value}</p>
@@ -43,8 +47,8 @@ export function DashboardStats({ stats }: { stats: DashboardStatsType }) {
               <div className={`flex h-11 w-11 items-center justify-center rounded-full ${color}`}>
                 <Icon className="h-5 w-5" />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 

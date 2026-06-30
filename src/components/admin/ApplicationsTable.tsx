@@ -30,7 +30,7 @@ export function ApplicationsTable({
   const allSelected = selectable && applications.length > 0 && applications.every((a) => selectedIds?.has(a.id));
 
   return (
-    <Table>
+    <Table className="min-w-[720px]">
       <TableHeader>
         <TableRow>
           {selectable && (
