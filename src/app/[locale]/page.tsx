@@ -25,12 +25,10 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { HIGHER_INSTITUTES, MAIN_PROGRAMMES, TOTAL_FIELDS } from '@/lib/constants/programmes';
 import { CONTACT_INFO } from '@/lib/constants/contact';
 
 const STEP_ICONS = [Users, GraduationCap, ClipboardCheck, UploadCloud, Users, CheckCircle2];
-const REQUIREMENT_KEYS = ['hnd', 'btech', 'mtech', 'bts', 'licence', 'master'] as const;
 
 const ADMISSION_REQUIREMENTS = [
   {
@@ -341,21 +339,6 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
                 ? 'Koumé - Bertoua, En Face la Hope Clinic · Tél: 691 459 611 | 690 355 329 | 657 546 543'
                 : 'Koumé - Bertoua, Opposite Hope Clinic · Tel: 691 459 611 | 690 355 329 | 657 546 543'}
             </div>
-          </div>
-        </section>
-
-        {/* Admission requirements */}
-        <section className="bg-gray-50 py-16">
-          <div className="container max-w-3xl">
-            <h2 className="text-center text-2xl font-bold text-ztf-navy sm:text-3xl">{t('requirements_title')}</h2>
-            <Accordion type="single" collapsible className="mt-10">
-              {REQUIREMENT_KEYS.map((key) => (
-                <AccordionItem key={key} value={key}>
-                  <AccordionTrigger className="text-ztf-navy">{t(key)}</AccordionTrigger>
-                  <AccordionContent className="text-gray-600">{t(`req_${key}`)}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
           </div>
         </section>
 
