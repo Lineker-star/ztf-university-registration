@@ -2,10 +2,13 @@ import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import {
+  AlertCircle,
   ArrowRight,
+  Check,
   CheckCircle2,
   ChevronDown,
   ClipboardCheck,
+  FileCheck,
   FileText,
   GraduationCap,
   Mail,
@@ -28,6 +31,56 @@ import { CONTACT_INFO } from '@/lib/constants/contact';
 
 const STEP_ICONS = [Users, GraduationCap, ClipboardCheck, UploadCloud, Users, CheckCircle2];
 const REQUIREMENT_KEYS = ['hnd', 'btech', 'mtech', 'bts', 'licence', 'master'] as const;
+
+const ADMISSION_REQUIREMENTS = [
+  {
+    en: 'An academic registration form (obtained from the school)',
+    fr: "Une fiche d'inscription académique (à retirer à la scolarité)",
+  },
+  {
+    en: 'A certified true copy of the Baccalaureate, GCE A Level, or any other equivalent',
+    fr: 'Deux (02) photocopies certifiées conformes du diplôme le plus élevé ou du relevé de notes',
+  },
+  {
+    en: 'Two (02) certified photocopies of the birth certificate less than three months old',
+    fr: "Deux (02) photocopies certifiées conformes de l'acte de naissance datant de moins de trois mois",
+  },
+  {
+    en: 'Four (04) 4x4 photos bearing the surname, first name, course, nationality, region of origin, date and place of birth on the back',
+    fr: 'Quatre (04) photos 4x4 portant le nom et prénom, parcours, nationalité, région d\'origine, date et lieu de naissance, au verso',
+  },
+  {
+    en: 'A receipt attesting to payment of the pre-registration fee of 35,000 FCFA to the Institute\'s registration department',
+    fr: "Un quitus attestant le paiement des frais de pré-inscription d'un montant de 35 000 FCFA au service des inscriptions de l'Institut",
+  },
+  {
+    en: 'A photocopy of the national identity card or equivalent document',
+    fr: "Une photocopie de la carte nationale d'identité ou d'un document équivalent",
+  },
+  {
+    en: 'The receipt for the medical examination issued by a Hope Clinic doctor (to be deposited with the School after the medical examination)',
+    fr: 'Le quitus de la visite médicale délivré par un médecin de la Hope Clinic (à déposer à la Scolarité après la visite médicale)',
+  },
+  {
+    en: "An A4 envelope and a cardboard folder, both bearing the candidate's address",
+    fr: "Une enveloppe A4 et une chemise cartonnée, les deux portant l'adresse du candidat",
+  },
+];
+
+const FOREIGN_DIPLOMA_DOCS = [
+  {
+    en: 'A certified copy (typed) of the birth certificate',
+    fr: "Une copie (dactylographiée) certifiée conforme d'acte de naissance",
+  },
+  {
+    en: 'A certified photocopy of the diploma authenticated by competent authorities',
+    fr: 'Une photocopie certifiée conforme du diplôme authentifié par les autorités compétentes',
+  },
+  {
+    en: "An A4 envelope bearing the candidate's name and address",
+    fr: "Une enveloppe au format A4 portant le nom et l'adresse du candidat",
+  },
+];
 
 export default function HomePage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
@@ -212,6 +265,81 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
                   <p className="mt-2 text-sm text-gray-500">{t(`${key}_text`)}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Official Admission Requirements */}
+        <section className="bg-gradient-to-br from-ztf-navyDeep to-ztf-navy py-16 text-white sm:py-20">
+          <div className="container mx-auto max-w-4xl px-4">
+            <div className="mb-10 text-center">
+              <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-ztf-gold/40 bg-ztf-gold/20 px-4 py-1.5 text-sm font-medium text-ztf-goldLight">
+                <FileCheck className="h-4 w-4" />
+                {isFr ? 'Documents Requis' : 'Required Documents'}
+              </span>
+              <h2 className="mb-3 text-3xl font-bold text-white sm:text-4xl">
+                {t('admission_req_title')}
+              </h2>
+              <p className="text-lg text-white/70">{t('admission_req_subtitle')}</p>
+            </div>
+
+            {/* Main checklist */}
+            <div className="glass-card-dark mb-6 rounded-2xl p-6 sm:p-8">
+              <ul className="space-y-3">
+                {ADMISSION_REQUIREMENTS.map((req, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-ztf-gold/40 bg-ztf-gold/20">
+                      <Check className="h-3.5 w-3.5 text-ztf-gold" />
+                    </div>
+                    <span className="text-sm leading-relaxed text-white/85 sm:text-base">
+                      {isFr ? req.fr : req.en}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Fee banner */}
+            <div className="mb-6 flex flex-col items-center justify-between gap-4 rounded-2xl bg-ztf-gold p-5 sm:flex-row sm:p-6">
+              <div>
+                <p className="text-lg font-bold text-ztf-navyDeep sm:text-xl">
+                  {t('admission_req_fees')}
+                </p>
+                <p className="mt-1 text-sm text-ztf-navyDeep/70">{t('admission_req_covers_title')}</p>
+                <p className="mt-1 text-sm font-medium text-ztf-navyDeep/80">
+                  {t('admission_req_covers')}
+                </p>
+              </div>
+              <div className="whitespace-nowrap text-3xl font-extrabold text-ztf-navyDeep sm:text-4xl">
+                {t('admission_req_fees_amount')}
+              </div>
+            </div>
+
+            {/* Foreign diplomas notice */}
+            <div className="mb-6 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-5 sm:p-6">
+              <div className="mb-3 flex items-start gap-3">
+                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" />
+                <div>
+                  <p className="font-semibold text-amber-300">{t('admission_req_foreign_title')}</p>
+                  <p className="mt-1 text-sm text-white/70">{t('admission_req_foreign_text')}</p>
+                </div>
+              </div>
+              <ul className="ml-8 space-y-2">
+                {FOREIGN_DIPLOMA_DOCS.map((doc, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-white/75">
+                    <span className="mt-1 text-amber-400">—</span>
+                    {isFr ? doc.fr : doc.en}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Location line */}
+            <div className="text-center text-sm text-white/60">
+              <MapPin className="mr-1.5 inline h-4 w-4 text-ztf-gold" />
+              {isFr
+                ? 'Koumé - Bertoua, En Face la Hope Clinic · Tél: 691 459 611 | 690 355 329 | 657 546 543'
+                : 'Koumé - Bertoua, Opposite Hope Clinic · Tel: 691 459 611 | 690 355 329 | 657 546 543'}
             </div>
           </div>
         </section>
