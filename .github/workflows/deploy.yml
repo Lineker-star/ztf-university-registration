@@ -32,6 +32,7 @@ jobs:
           RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
           NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
           NEXT_PUBLIC_MAIN_SITE_URL=${{ secrets.NEXT_PUBLIC_MAIN_SITE_URL }}
+          ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }}
           NODE_ENV=production
           EOF
 
